@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Visioneuse</h2>
+<mat-dialog-content>
+  <span class="pr_level">Prière : {{prayerNbr}}</span>
+  <p class="prayer_content">{{priere}}</p>
+  <!--modal-->
+  <div class="process_modal {{modal_status}}">
+    <div class="modal_content">
+      <div class="modal_icon_p">
+        <p class="modal_icon"></p>
+        <p class="modal_text">
+          Conversion en cours..
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- end modal-->
+</mat-dialog-content>
+<mat-dialog-actions class="shower-togglers">
+  <button mat-raised-button color="primary" (click)='initPrint()'>Télécharger</button>
+  <button mat-raised-button (click)='closeDialog()'>Fermer</button>
+</mat-dialog-actions>
