@@ -4,9 +4,9 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class UrlProviderService {
-  root:string = 'http://gnosis.io/in/';
-  creators_root:string = 'http://gnosis.io/tools/';
-  downloadDir:string = 'http://gnosis.io/tools/temp/';
+  root:string = 'http://gnosis.io/api/in/';
+  creators_root:string = 'http://gnosis.io/api/tools/';
+  downloadDir:string = 'http://gnosis.io/api/tools/temp/';
   //POST
   search:string = this.root + 'search.php';
   combine_search:string = this.root + 'combine-search.php';

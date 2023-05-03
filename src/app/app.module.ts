@@ -14,17 +14,14 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 //end
-
 //services
 import { EngineHandlerService } from './services/engine-handler.service';
 import { HelperService } from './services/helper.service';
 import { UrlProviderService } from './services/url-provider.service';
 //end
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HomeComponent } from './home/home.component';
 import { ModalContentComponent } from './modal-content/modal-content.component';
 import { PrayerModalComponent } from './prayer-modal/prayer-modal.component';
 import { PsaumeModalComponent } from './psaume-modal/psaume-modal.component';
@@ -34,7 +31,6 @@ import { HowComponent } from './how/how.component';
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
     ModalContentComponent,
     PrayerModalComponent,
     PsaumeModalComponent,
