@@ -56,3 +56,19 @@ modal
   justify-content: space-around;
   flex-wrap: nowrap;
 }
+.blue
+{
+  color: blue;
+}
+.green
+{
+  color: green;
+}
+.orange
+{
+  color: orange;
+}
+.red
+{
+  color: red;
+}

@@ -10,12 +10,14 @@ import { EngineHandlerService } from '../services/engine-handler.service';
 export class PrayerModalComponent {
   priere:string = "";
   prayerNbr:string = "";
+  nomArchange:string = "";
   //
   modal_status:string = "hidden";
   constructor(public engine:EngineHandlerService, public dialogRef:MatDialogRef<PrayerModalComponent>,
-  @Inject(MAT_DIALOG_DATA) public data: {numero_priere:string, contenu_priere:string}){
+  @Inject(MAT_DIALOG_DATA) public data: {numero_priere:string, contenu_priere:string, nom_archange:string, numero_psaume:string, nom_psaume:string}){
     this.priere = data.contenu_priere;
-    this.prayerNbr = data.numero_priere;
+    this.prayerNbr = "Évangile de l'Archange " + data.nom_archange + " - Prière " + data.numero_priere + " du Psaume " + data.numero_psaume + " de l'Archange " + data.nom_archange + " - " + data.nom_psaume;
+    this.nomArchange = data.nom_archange;
   }
   closeDialog(){
     this.dialogRef.close();
@@ -25,7 +27,7 @@ export class PrayerModalComponent {
     //
     let psaume_title = "";
     let psaume_body = "";
-    let prayer_title = "Prière " + this.prayerNbr;
+    let prayer_title = this.prayerNbr;
     let prayer_body = this.priere;
 
     this.engine.convertToPdf('prayer', psaume_title, psaume_body, prayer_title, prayer_body)
@@ -47,5 +49,18 @@ export class PrayerModalComponent {
   manageConversionErr(err:any){
     this.modal_status = "hidden";
     alert("Nous n'avons pas pu créer un pdf.");
+  }
+  setArchangeColor(archange:string){
+    let color = "";
+    if(archange === "MICHAËL"){
+      color = "blue";
+    }else if(archange === "RAPHAËL"){
+      color = "green";
+    }else if(archange === "GABRIEL"){
+      color = "orange";
+    }else if(archange === "OURIEL"){
+      color = "red";
+    }
+    return color;
   }
 }

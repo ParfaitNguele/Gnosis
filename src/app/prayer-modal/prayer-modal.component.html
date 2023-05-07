@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>Visioneuse</h2>
 <mat-dialog-content>
-  <span class="pr_level">Prière : {{prayerNbr}}</span>
+  <span class="pr_level {{setArchangeColor(nomArchange)}}">{{prayerNbr}}</span>
   <p class="prayer_content">{{priere}}</p>
   <!--modal-->
   <div class="process_modal {{modal_status}}">

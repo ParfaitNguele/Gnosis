@@ -1,8 +1,54 @@
 <h2 mat-dialog-title>Comment ça marche ?</h2>
 <mat-dialog-content>
 <p>
-  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  Gnosis, l'outil qui vous permet de rechercher les occurrences d'un thème dans la Bible Essénienne. Suivez ces quelques étapes pour une meilleure utilisation.
 </p>
+<h2>Entrer un terme, une expression ou une combinaison pour la recherche</h2>
+<p>
+  La première étape consiste à saisir votre recherche sur le champ ci-dessous.
+</p>
+<p>
+  <mat-form-field class="search_input">
+    <input class="search_field" matInput type="text" placeholder="thème, expression ou terme1+terme2">
+  </mat-form-field>
+</p>
+<p>
+  Votre recherche peut être :
+</p>
+<ol>
+  <li>Un terme simple : Dieu, Amour ou Famille, par exemple.</li>
+  <li>Une expression : Amour de Dieu, rites esséniens, par exemple.</li>
+  <li>Une combinaison de deux termes ou expressions : Dieu+Amour ou Rites esséniens+Amour de Dieu, par exemple.</li>
+</ol>
+<p>Pensez à saisir la bonne orthographe pour avoir de meilleurs résultats.</p>
+<h2>Filtrer les résultats attendus</h2>
+<p>
+  Utilisez les cases à cocher pour filtrer les résultats attendus. À ce sujet, vous avez deux catégories de filtres. D'une part, vous devez choisir entre les "Psaumes" ou les "Psaumes" ; ou alors les deux. Par défaut, les deux cases sont cochées. D'autre part, vous devez choisir au moins un archange (Michael, Raphael, Gabriel ou Ouriel). Par défaut, les 4 sont choisis. Ci-dessous, un aperçu desdites cases à cocher.
+</p>
+<p class="cat-lev-1">
+  <mat-slide-toggle color='primary' class="toogle main_toggle" checked><b>PSAUMES</b></mat-slide-toggle>
+  <mat-slide-toggle color='primary' class="toogle main_toggle" checked><b>PRIÈRES</b></mat-slide-toggle>
+</p>
+<p>
+  <mat-checkbox class="toogle" color='primary' checked>Michael</mat-checkbox>
+  <mat-checkbox class="toogle" color='primary' checked>Gabriel</mat-checkbox>
+  <mat-checkbox class="toogle" color='primary' checked>Raphael</mat-checkbox>
+  <mat-checkbox class="toogle" color='primary' checked>Ouriel</mat-checkbox>
+</p>
+<h2>Lancer la recherche</h2>
+<p>Pour cela, il suffit de cliquer sur le bouton "Rechercher".</p>
+<p><button mat-raised-button color="primary">Rechercher</button></p>
+<h2>Exploiter les résultats</h2>
+<p>
+Les résultats de votre recherche aparaîtront juste en dessous. Ils sont classés par ordre décroissant (du nombre d'occurrences).
+</p>
+<h2>Affichage complet et téléchargement.</h2>
+<p>Si vous souhaitez parcourir intégralement un contenu, il vous suffit de cliquer dessus. Une fenêtre contextuelle s'ouvre. Vous pouvez ainsi le lire.</p>
+<p>Si vous souhaitez sauvegarder ou imprimer ledit contenu, cliquez sur le bouton "Télécharger" qui se trouve au-dessous de la fenêtre contextuelle. Votre contenu sera converti en fichier PDF; le téléchargement lancé. Vous pourrez ainsi l'imprimer.</p>
+<p> Cliquez sur "Fermer" pour fermer la fenêtre.</p>
+<h2>Bonus : navigation</h2>
+<p>Pour vous rendre directement au fond de la page, cliquez sur la flèche suivante : <span id="lok-down-arrow" title="Bas de page">&#8595;</span></p>
+<p>Pour le haut de page, celle-ci : <span id="lok-down-arrow" title="Haut de page">&#8593;</span></p>
 </mat-dialog-content>
 <mat-dialog-actions class="shower-togglers">
   <button mat-raised-button color="primary" (click)='closeDialog()'>Fermer</button>

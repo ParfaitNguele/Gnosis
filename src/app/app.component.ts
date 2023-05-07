@@ -161,45 +161,21 @@ export class AppComponent {
   /*
   * * To manage psaumes and prayers when selected
   */
-  orderPsaumesAndPrayers(psaumesAndPrayers:Array<any>){
-    console.log("Ordering");
-    console.log(psaumesAndPrayers);
-    let tempPsaumePsaumesAndPrayers = [];
-    let tempPsaumePsaumesAndPrayersOcc = [];
-    let psaumes_total = 0;
-    let prayers_total = 0;
-    let psaumes_and_prayers_total = 0;
 
-    for(let i = 0; i < psaumesAndPrayers.length; i++){
-
-      let occ_name = this.countCurrentContentOcc(psaumesAndPrayers[i].nom_psaume);
-      let occ_psaume = this.countCurrentContentOcc(psaumesAndPrayers[i].contenu_psaume);
-      let occ_prayer = this.countCurrentContentOcc(psaumesAndPrayers[i].contenu_priere);
-      psaumesAndPrayers[i].occ_psaume = occ_name + occ_psaume;
-      psaumesAndPrayers[i].occ_priere = occ_prayer;
-      psaumesAndPrayers[i].occ_total = occ_name + occ_psaume + occ_prayer;
-      //update totals
-      psaumes_total+= occ_psaume;
-      prayers_total+= occ_prayer;
-      psaumes_and_prayers_total = psaumes_total + prayers_total;
-      //
-      let random_nbr = this.generateRandomNbr();
-      let total = occ_name + occ_psaume + occ_prayer;
-      let token = "" + total + "." + random_nbr + "";
-      let unique_total = parseFloat(token);
-      psaumesAndPrayers[i].random_nbr = random_nbr;
-      psaumesAndPrayers[i].token = token;
-      //
-      tempPsaumePsaumesAndPrayers.push(psaumesAndPrayers[i]);
-      tempPsaumePsaumesAndPrayersOcc.push(unique_total);
-      //
-    }
-    this.psaumesTotal = psaumes_total;
-    this.prayersTotal = prayers_total;
-    this.psaumesAndPrayersTotal = psaumes_and_prayers_total;
+  orderPsaumesAndPrayers(data:any){
+    this.psaumesTotal = 0;
+    this.prayersTotal = 0;
+    this.psaumesAndPrayersTotal = 0;
     //
-    let sortedOcc = this.sortArrayDesc(tempPsaumePsaumesAndPrayersOcc);
-    this.prayersAndPsaumes = this.getReadyPsaumesAndPrayers(sortedOcc, tempPsaumePsaumesAndPrayers);
+    this.psaumesTotal = data.psaumes_total;
+    this.prayersTotal = data.prayers_total;
+    this.psaumesAndPrayersTotal = data.psaumes_and_prayers_total;
+
+    let sortedOcc = this.sortArrayDesc(data.occurrences);
+    let arrangedArr = this.getReadyPsaumesAndPrayers(sortedOcc, data.content);
+    this.ppStore = arrangedArr;
+    let splited = this.spliteArrayDefault(arrangedArr, "psaumes_and_prayers");
+    this.prayersAndPsaumes = splited;
     //hide loader
     this.modal_status = "hidden";
     this.results_status = '';
@@ -221,43 +197,6 @@ export class AppComponent {
     }
     return readyData;
   }
-  countCurrentContentOcc(content:string){
-
-    let str = this.str.trim();
-    let markers = ["s", "x", "S", "X"];
-    let last_char = str.slice(-1);
-    let cut_str = str.slice(0, -1);
-    let reg = new RegExp(str, "gi");
-    //
-    if(/[A-Za-z]+/.test(content)){
-      if(markers.indexOf(last_char) === -1){
-        let matches = content.match(reg);
-        if(Array.isArray(matches)){
-          let nbr = matches.length;
-          return nbr;
-        }else{
-          return 0;
-        }
-      }else{
-        let extra_reg = new RegExp(cut_str, "gi");
-        let extra_matches = content.match(extra_reg);
-        let matches = content.match(reg);
-        //
-        let total_count = 0;
-
-        if(Array.isArray(matches)){
-          total_count+= matches.length;
-        }
-        if(Array.isArray(extra_matches)){
-          total_count+= extra_matches.length;
-        }
-
-        return total_count;
-      }
-    }else{
-      return 0;
-    }
-  }
   loadMorePsaumesAndPrayers(tag:string){
     if(tag === "psaumes_and_prayers"){
       let prev_index = this.psaumesAndPrayersIndex;
@@ -267,14 +206,12 @@ export class AppComponent {
         let new_slice = data.slice(prev_index + 1, -1);
         this.psaumesAndPrayersIndex+= length;
         this.more_psaumes_and_prayers = "hidden";
-        this.orderPsaumesAndPrayers(new_slice);
-        this.moveToContent();
+        this.prayersAndPsaumes = this.prayersAndPsaumes.concat(new_slice);
       }else{
         this.psaumesAndPrayersIndex+= 100;
         let data_to_load = this.ppStore.slice(prev_index + 1, this.psaumesAndPrayersIndex);
         this.more_psaumes_and_prayers = "";
-        this.orderPsaumesAndPrayers(data_to_load);
-        this.moveToContent();
+        this.prayersAndPsaumes = this.prayersAndPsaumes.concat(data_to_load);
       }
     }else if(tag === "psaumes"){
       let prev_index = this.psaumesIndex;
@@ -284,14 +221,12 @@ export class AppComponent {
         let new_slice = data.slice(prev_index + 1, -1);
         this.psaumesIndex+= length;
         this.more_psaumes = "hidden";
-        this.orderPsaumes(new_slice);
-        this.moveToContent();
+        this.psaumes = this.psaumes.concat(new_slice);
       }else{
         this.psaumesIndex+= 100;
         let data_to_load = this.psStore.slice(prev_index + 1, this.psaumesIndex);
         this.more_psaumes = "";
-        this.orderPsaumes(data_to_load);
-        this.moveToContent();
+        this.psaumes = this.psaumes.concat(data_to_load);
       }
     }else if(tag === "prayers"){
       let prev_index = this.prayersIndex;
@@ -301,50 +236,26 @@ export class AppComponent {
         let new_slice = data.slice(prev_index + 1, -1);
         this.prayersIndex+= length;
         this.more_prayers = "hidden";
-        this.orderPrayers(new_slice);
-        this.moveToContent();
+        this.prayers = this.prayers.concat(new_slice);
       }else{
         this.prayersIndex+= 100;
         let data_to_load = this.prStore.slice(prev_index + 1, this.prayersIndex);
         this.more_prayers = "";
-        this.orderPrayers(data_to_load);
-        this.moveToContent();
+        this.prayers = this.prayers.concat(data_to_load);
       }
     }
   }
   /*
   * * To manage psaumes when selected
   */
-  orderPsaumes(psaumes:Array<any>){
-    let tempPsaumes = [];
-    let tempPsaumesOcc = [];
-    let psaumes_total = 0;
-
-    for(let i = 0; i < psaumes.length; i++){
-
-      let occ_name = this.countCurrentContentOcc(psaumes[i].nom_psaume);
-      let occ_psaume = this.countCurrentContentOcc(psaumes[i].contenu_psaume);
-      psaumes[i].occ_psaume = occ_name + occ_psaume;
-      psaumes[i].occ_total = occ_name + occ_psaume;
-      //update totals
-      psaumes_total+= occ_psaume;
-      psaumes_total+= occ_name;
-      //
-      let random_nbr = this.generateRandomNbr();
-      let total = occ_name + occ_psaume;
-      let token = "" + total + "." + random_nbr + "";
-      let unique_total = parseFloat(token);
-      psaumes[i].random_nbr = random_nbr;
-      psaumes[i].token = token;
-      //
-      tempPsaumes.push(psaumes[i]);
-      tempPsaumesOcc.push(unique_total);
-      //
-    }
-    this.psaumesOnlyTotal = psaumes_total;
+  orderPsaumes(data:any){
+    this.psaumesOnlyTotal = data.psaumes_total;
     //
-    let sortedOcc = this.sortArrayDesc(tempPsaumesOcc);
-    this.psaumes = this.getReadyPsaumesAndPrayers(sortedOcc, tempPsaumes);
+    let sortedOcc = this.sortArrayDesc(data.occurrences);
+    let arrangedArr = this.getReadyPsaumesAndPrayers(sortedOcc, data.content);
+    this.psStore = arrangedArr;
+    let splited = this.spliteArrayDefault(arrangedArr, "psaumes");
+    this.psaumes = splited;
     //hide loader
     this.modal_status = "hidden";
     this.results_status = '';
@@ -358,34 +269,14 @@ export class AppComponent {
   /*
   * * To manage prayers when selected
   */
-  orderPrayers(prayers:Array<any>){
-    let tempPrayers = [];
-    let tempPrayersOcc = [];
-    let prayers_total = 0;
-
-    for(let i = 0; i < prayers.length; i++){
-
-      let occ_prayer = this.countCurrentContentOcc(prayers[i].contenu_priere);
-      prayers[i].occ_priere = occ_prayer;
-      prayers[i].occ_total = occ_prayer;
-      //update totals
-      prayers_total+= occ_prayer;
-      //
-      let random_nbr = this.generateRandomNbr();
-      let total = occ_prayer;
-      let token = "" + total + "." + random_nbr + "";
-      let unique_total = parseFloat(token);
-      prayers[i].random_nbr = random_nbr;
-      prayers[i].token = token;
-      //
-      tempPrayers.push(prayers[i]);
-      tempPrayersOcc.push(unique_total);
-      //
-    }
-    this.prayersOnlyTotal = prayers_total;
+  orderPrayers(data:any){
+    this.prayersOnlyTotal = data.prayers_total;
     //
-    let sortedOcc = this.sortArrayDesc(tempPrayersOcc);
-    this.prayers = this.getReadyPsaumesAndPrayers(sortedOcc, tempPrayers);
+    let sortedOcc = this.sortArrayDesc(data.occurrences);
+    let arrangedArr = this.getReadyPsaumesAndPrayers(sortedOcc, data.content);
+    this.prStore = arrangedArr;
+    let splited = this.spliteArrayDefault(arrangedArr, "prayers");
+    this.prayers = splited;
     //hide loader
     this.modal_status = "hidden";
     this.results_status = '';
@@ -452,18 +343,12 @@ export class AppComponent {
           alert("Aucune occurrence trouvée.");
         }else{
           if(this.main_filters.indexOf('psaumes') !== -1 && this.main_filters.indexOf('prayers') !== -1){
-            this.ppStore = res.content;
-            let pp = this.spliteArrayDefault(res.content, "psaumes_and_prayers");
-            this.orderPsaumesAndPrayers(pp);
+            this.orderPsaumesAndPrayers(res);
           }else{
             if(this.main_filters.indexOf('psaumes') !== -1){
-              this.psStore = res.content;
-              let ps = this.spliteArrayDefault(res.content, "psaumes");
-              this.orderPsaumes(ps);
+              this.orderPsaumes(res);
             }else{
-              this.prStore = res.content;
-              let pr = this.spliteArrayDefault(res.content, "prayers");
-              this.orderPrayers(pr);
+              this.orderPrayers(res);
             }
           }
         }
@@ -501,18 +386,12 @@ export class AppComponent {
           alert("Aucune occurrence trouvée.");
         }else{
           if(this.main_filters.indexOf('psaumes') !== -1 && this.main_filters.indexOf('prayers') !== -1){
-            this.ppCoStore = res.content;
-            let pp = this.spliteCombineArrayDefault(res.content, "psaumes_and_prayers");
-            this.orderCombinePsaumesAndPrayers(pp);
+            this.orderCombinePsaumesAndPrayers(res);
           }else{
             if(this.main_filters.indexOf('psaumes') !== -1){
-              this.psCoStore = res.content;
-              let ps = this.spliteCombineArrayDefault(res.content, "psaumes");
-              this.orderCombinePsaumes(ps);
+              this.orderCombinePsaumes(res);
             }else{
-              this.prCoStore = res.content;
-              let pr = this.spliteCombineArrayDefault(res.content, "prayers");
-              this.orderCombinePrayers(pr);
+              this.orderCombinePrayers(res);
             }
           }
         }
@@ -545,57 +424,16 @@ export class AppComponent {
       return arr_to_slice.slice(0, 100);
     }
   }
-  orderCombinePsaumesAndPrayers(psaumesAndPrayers:Array<any>){
-    let tempPsaumePsaumesAndPrayers = [];
-    let tempPsaumePsaumesAndPrayersOcc = [];
-    let psaumes_total = 0;
-    let prayers_total = 0;
-    let psaumes_and_prayers_total = 0;
-
-    for(let i = 0; i < psaumesAndPrayers.length; i++){
-      //str_1
-      let occ_name_str_1 = this.countCombineCurrentContentOcc(psaumesAndPrayers[i].nom_psaume, this.str_1);
-      let occ_psaume_str_1 = this.countCombineCurrentContentOcc(psaumesAndPrayers[i].contenu_psaume, this.str_1);
-      let occ_prayer_str_1 = this.countCombineCurrentContentOcc(psaumesAndPrayers[i].contenu_priere, this.str_1);
-      psaumesAndPrayers[i].occ_psaume_str_1 = occ_name_str_1 + occ_psaume_str_1;
-      psaumesAndPrayers[i].occ_priere_str_1 = occ_prayer_str_1;
-      psaumesAndPrayers[i].occ_total_str_1 = occ_name_str_1 + occ_psaume_str_1 + occ_prayer_str_1;
-      //update totals
-      psaumes_total+= occ_psaume_str_1;
-      prayers_total+= occ_prayer_str_1;
-      psaumes_and_prayers_total = psaumes_total + prayers_total;
-      //str_2
-      let occ_name_str_2 = this.countCombineCurrentContentOcc(psaumesAndPrayers[i].nom_psaume, this.str_2);
-      let occ_psaume_str_2 = this.countCombineCurrentContentOcc(psaumesAndPrayers[i].contenu_psaume, this.str_2);
-      let occ_prayer_str_2 = this.countCombineCurrentContentOcc(psaumesAndPrayers[i].contenu_priere, this.str_2);
-      psaumesAndPrayers[i].occ_psaume_str_2 = occ_name_str_2 + occ_psaume_str_2;
-      psaumesAndPrayers[i].occ_priere_str_2 = occ_prayer_str_2;
-      psaumesAndPrayers[i].occ_total_str_2 = occ_name_str_2 + occ_psaume_str_2 + occ_prayer_str_2;
-      //total for the two str
-      psaumesAndPrayers[i].occ_total = psaumesAndPrayers[i].occ_total_str_1 + psaumesAndPrayers[i].occ_total_str_2;
-      //update totals
-      psaumes_total+= occ_psaume_str_2;
-      prayers_total+= occ_prayer_str_2;
-      psaumes_and_prayers_total = psaumes_total + prayers_total;
-      //
-      let random_nbr = this.generateRandomNbr();
-      let total = occ_name_str_1 + occ_psaume_str_1 + occ_prayer_str_1 + occ_name_str_2 + occ_psaume_str_2 + occ_prayer_str_2;
-      let token = "" + total + "." + random_nbr + "";
-      let unique_total = parseFloat(token);
-      psaumesAndPrayers[i].random_nbr = random_nbr;
-      psaumesAndPrayers[i].token = token;
-      //
-      tempPsaumePsaumesAndPrayers.push(psaumesAndPrayers[i]);
-      tempPsaumePsaumesAndPrayersOcc.push(unique_total);
-      //
-    }
-
-    this.psaumesCombineTotal = psaumes_total;
-    this.prayersCombineTotal = prayers_total;
-    this.psaumesAndPrayersCombineTotal = psaumes_and_prayers_total;
+  orderCombinePsaumesAndPrayers(data:any){
+    this.psaumesCombineTotal = data.psaumes_total;
+    this.prayersCombineTotal = data.prayers_total;
+    this.psaumesAndPrayersCombineTotal = data.psaumes_and_prayers_total;
     //
-    let sortedOcc = this.sortArrayDesc(tempPsaumePsaumesAndPrayersOcc);
-    this.combinePrayersAndPsaumes = this.getReadyPsaumesAndPrayers(sortedOcc, tempPsaumePsaumesAndPrayers);
+    let sortedOcc = this.sortArrayDesc(data.occurrences);
+    let arrangedArr = this.getReadyPsaumesAndPrayers(sortedOcc, data.content);
+    this.ppCoStore = arrangedArr;
+    let splited = this.spliteCombineArrayDefault(arrangedArr, "psaumes_and_prayers");
+    this.combinePrayersAndPsaumes = splited;
     //hide loader
     this.modal_status = "hidden";
     this.combine_results_status = '';
@@ -606,45 +444,14 @@ export class AppComponent {
     //hide simple results block
     this.results_status = 'hidden';
   }
-  orderCombinePsaumes(psaumes:Array<any>){
-    let tempPsaumes = [];
-    let tempPsaumesOcc = [];
-    let psaumes_total = 0;
-
-    for(let i = 0; i < psaumes.length; i++){
-      //str_1
-      let occ_name_str_1 = this.countCombineCurrentContentOcc(psaumes[i].nom_psaume, this.str_1);
-      let occ_psaume_str_1 = this.countCombineCurrentContentOcc(psaumes[i].contenu_psaume, this.str_1);
-      psaumes[i].occ_psaume_str_1 = occ_name_str_1 + occ_psaume_str_1;
-      //update totals
-      psaumes_total+= occ_psaume_str_1;
-      psaumes_total+= occ_name_str_1;
-
-      //str_2
-      let occ_name_str_2 = this.countCombineCurrentContentOcc(psaumes[i].nom_psaume, this.str_2);
-      let occ_psaume_str_2 = this.countCombineCurrentContentOcc(psaumes[i].contenu_psaume, this.str_2);
-      psaumes[i].occ_psaume_str_2 = occ_name_str_2 + occ_psaume_str_2;
-      //update totals
-      psaumes_total+= occ_psaume_str_2;
-      psaumes_total+= occ_name_str_2;
-
-      //set total
-      psaumes[i].occ_total = psaumes[i].occ_psaume_str_1 + psaumes[i].occ_psaume_str_2;
-      //
-      let random_nbr = this.generateRandomNbr();
-      let total = psaumes[i].occ_total;
-      let token = "" + total + "." + random_nbr + "";
-      let unique_total = parseFloat(token);
-      psaumes[i].random_nbr = random_nbr;
-      psaumes[i].token = token;
-      //
-      tempPsaumes.push(psaumes[i]);
-      tempPsaumesOcc.push(unique_total);
-    }
-    this.combinePsaumesOnlyTotal = psaumes_total;
+  orderCombinePsaumes(data:any){
+    this.combinePsaumesOnlyTotal = data.psaumes_total;
     //
-    let sortedOcc = this.sortArrayDesc(tempPsaumesOcc);
-    this.combinePsaumes = this.getReadyPsaumesAndPrayers(sortedOcc, tempPsaumes);
+    let sortedOcc = this.sortArrayDesc(data.occurrences);
+    let arrangedArr = this.getReadyPsaumesAndPrayers(sortedOcc, data.content);
+    this.psCoStore = arrangedArr;
+    let splited = this.spliteCombineArrayDefault(arrangedArr, "psaumes");
+    this.combinePsaumes = splited;
     //hide loader
     this.modal_status = "hidden";
     this.combine_results_status = '';
@@ -655,41 +462,13 @@ export class AppComponent {
     //hide simple results block
     this.results_status = 'hidden';
   }
-  orderCombinePrayers(prayers:Array<any>){
-    let tempPrayers = [];
-    let tempPrayersOcc = [];
-    let prayers_total = 0;
-
-    for(let i = 0; i < prayers.length; i++){
-
-      //str_1
-      let occ_prayer_str_1 = this.countCombineCurrentContentOcc(prayers[i].contenu_priere, this.str_1);
-      prayers[i].occ_priere_str_1 = occ_prayer_str_1;
-      //update totals
-      prayers_total+= occ_prayer_str_1;
-      //str_2
-      let occ_prayer_str_2 = this.countCombineCurrentContentOcc(prayers[i].contenu_priere, this.str_2);
-      prayers[i].occ_priere_str_2 = occ_prayer_str_2;
-      //update totals
-      prayers_total+= occ_prayer_str_2;
-
-      //set total
-      prayers[i].occ_total = occ_prayer_str_1 + occ_prayer_str_2;
-      //
-      let random_nbr = this.generateRandomNbr();
-      let total = prayers[i].occ_total;
-      let token = "" + total + "." + random_nbr + "";
-      let unique_total = parseFloat(token);
-      prayers[i].random_nbr = random_nbr;
-      prayers[i].token = token;
-      //
-      tempPrayers.push(prayers[i]);
-      tempPrayersOcc.push(unique_total);
-      //
-    }
-    this.combinePrayersOnlyTotal = prayers_total;
-    let sortedOcc = this.sortArrayDesc(tempPrayersOcc);
-    this.combinePrayers = this.getReadyPsaumesAndPrayers(sortedOcc, tempPrayers);
+  orderCombinePrayers(data:any){
+    this.combinePrayersOnlyTotal = data.prayers_total;
+    let sortedOcc = this.sortArrayDesc(data.occurrences);
+    let arrangedArr = this.getReadyPsaumesAndPrayers(sortedOcc, data.content);
+    this.prCoStore = arrangedArr;
+    let splited = this.spliteCombineArrayDefault(arrangedArr, "prayers");
+    this.combinePrayers = splited;
     //hide loader
     this.modal_status = "hidden";
     this.combine_results_status = '';
@@ -700,42 +479,6 @@ export class AppComponent {
     //hide simple search results block
     this.results_status = 'hidden';
   }
-  countCombineCurrentContentOcc(content:string, str_x:string){
-    let str = str_x.trim();
-    let markers = ["s", "x", "S", "X"];
-    let last_char = str.slice(-1);
-    let cut_str = str.slice(0, -1);
-    let reg = new RegExp(str, "gi");
-    //
-    if(/[A-Za-z]+/.test(content)){
-      if(markers.indexOf(last_char) === -1){
-        let matches = content.match(reg);
-        if(Array.isArray(matches)){
-          let nbr = matches.length;
-          return nbr;
-        }else{
-          return 0;
-        }
-      }else{
-        let extra_reg = new RegExp(cut_str, "gi");
-        let extra_matches = content.match(extra_reg);
-        let matches = content.match(reg);
-        //
-        let total_count = 0;
-
-        if(Array.isArray(matches)){
-          total_count+= matches.length;
-        }
-        if(Array.isArray(extra_matches)){
-          total_count+= extra_matches.length;
-        }
-
-        return total_count;
-      }
-    }else{
-      return 0;
-    }
-  }
   loadMoreCombinePsaumesAndPrayers(tag:string){
     if(tag === "psaumes_and_prayers"){
       let prev_index = this.combinePsaumesAndPrayersIndex;
@@ -745,14 +488,12 @@ export class AppComponent {
         let new_slice = data.slice(prev_index + 1, -1);
         this.combinePsaumesAndPrayersIndex+= length;
         this.more_combine_psaumes_and_prayers = "hidden";
-        this.orderCombinePsaumesAndPrayers(new_slice);
-        this.moveToContent();
+        this.combinePrayersAndPsaumes = this.combinePrayersAndPsaumes.concat(new_slice);
       }else{
         this.combinePsaumesAndPrayersIndex+= 100;
         let data_to_load = this.ppCoStore.slice(prev_index + 1, this.combinePsaumesAndPrayersIndex);
         this.more_combine_psaumes_and_prayers = "";
-        this.orderCombinePsaumesAndPrayers(data_to_load);
-        this.moveToContent();
+        this.combinePrayersAndPsaumes = this.combinePrayersAndPsaumes.concat(data_to_load);
       }
     }else if(tag === "psaumes"){
       let prev_index = this.combinePsaumesIndex;
@@ -762,14 +503,12 @@ export class AppComponent {
         let new_slice = data.slice(prev_index + 1, -1);
         this.combinePsaumesIndex+= length;
         this.more_combine_psaumes = "hidden";
-        this.orderCombinePsaumes(new_slice);
-        this.moveToContent();
+        this.combinePsaumes = this.combinePsaumes.concat(new_slice);
       }else{
         this.combinePsaumesIndex+= 100;
         let data_to_load = this.psCoStore.slice(prev_index + 1, this.combinePsaumesIndex);
         this.more_combine_psaumes = "";
-        this.orderCombinePsaumes(data_to_load);
-        this.moveToContent();
+        this.combinePsaumes = this.combinePsaumes.concat(data_to_load);
       }
     }else if(tag === "prayers"){
       let prev_index = this.combinePrayersIndex;
@@ -779,45 +518,48 @@ export class AppComponent {
         let new_slice = data.slice(prev_index + 1, -1);
         this.combinePrayersIndex+= length;
         this.more_combine_prayers = "hidden";
-        this.orderCombinePrayers(new_slice);
-        this.moveToContent();
+        this.combinePrayers = this.combinePrayers.concat(new_slice);
       }else{
         this.combinePrayersIndex+= 100;
         let data_to_load = this.prCoStore.slice(prev_index + 1, this.combinePrayersIndex);
         this.more_combine_prayers = "";
-        this.orderCombinePrayers(data_to_load);
-        this.moveToContent();
+        this.combinePrayers = this.combinePrayers.concat(data_to_load);
       }
     }
   }
   /*
   * * modals methods
   */
-  showPsaumeAndPrayer(psaume_title:string, psaume_content:string, prayer_content:string, psaume_nbr:string, prayer_nbr:string){
+  showPsaumeAndPrayer(psaume_title:string, psaume_content:string, prayer_content:string, psaume_nbr:string, prayer_nbr:string, nom_archange:string){
     this.dialog.open(ModalContentComponent,{
       data:{
         title:psaume_title,
-        psaume:psaume_content,
+        psaume:this.formateInput(psaume_content),
         priere:prayer_content,
         numero_psaume:psaume_nbr,
-        numero_priere:prayer_nbr
+        numero_priere:prayer_nbr,
+        nom_archange:nom_archange
       }
     });
   }
-  showPsaume(nom_psaume:string, contenu_psaume:string, numero_psaume:string){
+  showPsaume(nom_psaume:string, contenu_psaume:string, numero_psaume:string, nom_archange:string){
     this.dialog.open(PsaumeModalComponent,{
       data:{
         nom_psaume:nom_psaume,
-        contenu_psaume:contenu_psaume,
-        numero_psaume:numero_psaume
+        contenu_psaume:this.formateInput(contenu_psaume),
+        numero_psaume:numero_psaume,
+        nom_archange:nom_archange
       }
     });
   }
-  showPrayer(contenu_priere:string, numero_priere:string){
+  showPrayer(contenu_priere:string, numero_priere:string, nom_archange:string, numero_psaume:string, nom_psaume:string){
     this.dialog.open(PrayerModalComponent,{
       data:{
         numero_priere:numero_priere,
-        contenu_priere:contenu_priere
+        contenu_priere:contenu_priere,
+        nom_archange:nom_archange,
+        numero_psaume:numero_psaume,
+        nom_psaume:nom_psaume
       }
     });
   }
@@ -869,24 +611,43 @@ export class AppComponent {
   }
   moveToBottom(){
     window.scroll({
-      top:100000,
+      top:400000,
       left:0,
       behavior:"smooth",
     });
   }
-  moveToContent(){
-    window.scroll({
-      top:120,
-      left:0,
-      behavior:"smooth",
-    });
+  formateInput(input:string){
+    let reg = /\s(?=[0-9]+\.)/g;
+    let new_str = input.replace(reg, "<br/><br/>");
+    return new_str;
+  }
+  setContentStatut(occ:number){
+    if(occ === 0){
+      return "hidden";
+    }else{
+      return "";
+    }
+  }
+  setContentStatutForCombine(occ_1:number, occ_2:number){
+    if(occ_1 === 0 && occ_2 === 0){
+      return "hidden";
+    }else{
+      return "";
+    }
+  }
+  setArchangeColor(archange:string){
+    let color = "";
+    if(archange === "MICHAËL"){
+      color = "blue";
+    }else if(archange === "RAPHAËL"){
+      color = "green";
+    }else if(archange === "GABRIEL"){
+      color = "orange";
+    }else if(archange === "OURIEL"){
+      color = "red";
+    }
+    return color;
   }
   test(){
-    let filename = 'rib.pdf';
-    let filepath = 'http://localhost/lok/tools/temp/' + filename;
-    let a = document.createElement('a');
-    a.download = filename;
-    a.href = filepath;
-    a.click();
   }
 }
