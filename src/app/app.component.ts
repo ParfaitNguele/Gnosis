@@ -89,7 +89,10 @@ export class AppComponent {
   combinePsaumesAndPrayersIndex:number = 100;
   combinePrayersIndex:number = 100;
   combinePsaumesIndex:number = 100;
-
+  //
+  resultsTotal:number = 0;
+  resultsTotalStatus:string = "hidden";
+  //
   constructor(private engine:EngineHandlerService, public helper:HelperService, public dialog: MatDialog){
 
     //this.test();
@@ -611,14 +614,14 @@ export class AppComponent {
   }
   moveToBottom(){
     window.scroll({
-      top:400000,
+      top:900000,
       left:0,
       behavior:"smooth",
     });
   }
   formateInput(input:string){
     let reg = /\s(?=[0-9]+\.)/g;
-    let new_str = input.replace(reg, "<br/><br/>");
+    let new_str = input.replace(reg, "<br/>");
     return new_str;
   }
   setContentStatut(occ:number){
@@ -638,15 +641,19 @@ export class AppComponent {
   setArchangeColor(archange:string){
     let color = "";
     if(archange === "MICHAËL"){
-      color = "blue";
+      color = "red";
     }else if(archange === "RAPHAËL"){
       color = "green";
     }else if(archange === "GABRIEL"){
-      color = "orange";
+      color = "blue";
     }else if(archange === "OURIEL"){
-      color = "red";
+      color = "yellow";
     }
     return color;
+  }
+  setResultsTotal(total:number){
+    this.resultsTotal = total;
+    this.resultsTotalStatus = "";
   }
   test(){
   }

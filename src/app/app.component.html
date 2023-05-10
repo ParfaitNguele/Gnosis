@@ -1,232 +1,236 @@
-<!--<router-outlet></router-outlet>-->
+<div class="gnosis_main_container">
+  <!--<router-outlet></router-outlet>-->
 
-<!--TOOL LOGO-->
-<div class="logo_div">
-  <img class="logo_img" alt="Lok" title='Gnosis' src="assets/images/gnosis.jpg">
-  <p class="tool_description">
-    L'outil qui vous permet de rechercher les occurrences d'un thème dans la Bible Essénienne.<br> <span class="how_trigger" (click)="shohHowItWorksModal()">Comment ça marche ?</span>
-  </p>
-</div>
-
-<!--SEARCH FORM-->
-<div class="engine_div">
-  <mat-form-field class="search_input">
-    <input #search_str class="search_field" matInput type="text" placeholder="thème, expression ou thème 1 + thème 2" (keyup)="setString(search_str.value)" (change)="setString(search_str.value)">
-  </mat-form-field>
-  <button mat-raised-button color="primary" (click)='startSearch()'>Rechercher</button>
-  <!--filters-->
-  <div class="filters_div">
-    <p class="cat-lev-1">
-      <mat-slide-toggle color='primary' class="toogle main_toggle" checked (click)="addSearchFilter('main', 'psaumes')"><b>PSAUMES</b></mat-slide-toggle>
-      <mat-slide-toggle color='primary' class="toogle main_toggle" checked (click)="addSearchFilter('main', 'prayers')"><b>PRIÈRES</b></mat-slide-toggle>
-    </p>
-    <mat-divider class="divider"></mat-divider>
-    <p class="cat-lev-2">
-      <mat-checkbox class="toogle" color='primary' checked (click)="addSearchFilter('second', 'michael')">Michael</mat-checkbox>
-      <mat-checkbox class="toogle" color='primary' checked (click)="addSearchFilter('second', 'gabriel')">Gabriel</mat-checkbox>
-      <mat-checkbox class="toogle" color='primary' checked (click)="addSearchFilter('second', 'raphael')">Raphael</mat-checkbox>
-      <mat-checkbox class="toogle" color='primary' checked (click)="addSearchFilter('second', 'ouriel')">Ouriel</mat-checkbox>
+  <!--TOOL LOGO-->
+  <div class="logo_div">
+    <img class="logo_img" alt="Lok" title='Gnosis' src="assets/images/gnosis.jpg">
+    <p class="tool_description">
+      L'outil qui vous permet de rechercher les occurrences d'un thème dans la Bible Essénienne.<br> <span class="how_trigger" (click)="shohHowItWorksModal()">Comment ça marche ?</span>
     </p>
   </div>
-</div>
 
-<!--results wrapper-->
-<mat-card class="{{results_status}}">
-  <mat-card-content>
-    <!--psaumes and prayers -->
-    <mat-card class="{{psaumes_prayers_container}}">
-      <mat-card-content>
-        <!--toolbar-->
-        <p>
-          <mat-toolbar class="results_tool_bar">
-            <span>Recherche : " {{str}} " <sup class="occ_badge">{{psaumesAndPrayersTotal}} occurrence.s</sup></span>
-            <span>Psaumes <sup class="occ_badge">{{psaumesTotal}} occurrence.s</sup></span>
-            <span>Prières <sup class="occ_badge">{{prayersTotal}} occurrence.s</sup></span>
-          </mat-toolbar>
-        </p>
-        <!--end-->
-        <mat-card *ngFor = "let pp of prayersAndPsaumes">
-          <mat-card-content>
-            <!--psaume + prayer-->
-            <mat-card class="clickable" (click)='showPsaumeAndPrayer(pp.nom_psaume, pp.contenu_psaume, pp.contenu_priere, pp.numero_psaume, pp.numero_priere, pp.nom_archange)'>
-              <span class="all_occ_span">Total : {{pp.occ_total}}</span>
-              <mat-card-content >
-                <p class="ps_level">Psaume {{pp.numero_psaume}} de l'Archange {{pp.nom_archange}} - {{pp.nom_psaume}}<sup class="{{setArchangeColor(pp.nom_archange)}}">{{pp.occ_psaume}} occurrence.s</sup></p>
-                <p class="pr_level {{setContentStatut(pp.occ_priere)}}">Prière {{pp.numero_priere}} <sup class="{{setArchangeColor(pp.nom_archange)}}">{{pp.occ_priere}} occurrence.s</sup></p>
-              </mat-card-content>
-            </mat-card>
-          </mat-card-content>
-        </mat-card>
-        <!--to display more content-->
-        <p id ="more_btn_container1" class="{{more_psaumes_and_prayers}}">
-          <button mat-raised-button color="primary" (click)="loadMorePsaumesAndPrayers('psaumes_and_prayers')" class="{{more_psaumes_and_prayers}}">Afficher plus</button>
-        </p>
-      </mat-card-content>
-    </mat-card>
-
-    <!--psaumes -->
-    <mat-card class="{{psaumes_container}}">
-      <mat-card-content>
-        <!--toolbar-->
-        <p>
-          <mat-toolbar class="results_tool_bar">
-            <span>Recherche : " {{str}} " <sup class="occ_badge">{{psaumesOnlyTotal}} occurrence.s</sup></span>
-          </mat-toolbar>
-        </p>
-        <!--end-->
-        <!--single item : psaume -->
-        <mat-card *ngFor = "let ps of psaumes">
-          <mat-card-content>
-            <!--psaume-->
-            <mat-card class="clickable" (click)='showPsaume(ps.nom_psaume, ps.contenu_psaume, ps.numero_psaume, ps.nom_archange)'>
-              <p class="ps_level">Psaume {{ps.numero_psaume}} de l'Archange {{ps.nom_archange}} - {{ps.nom_psaume}}<sup class="{{setArchangeColor(ps.nom_archange)}}">{{ps.occ_psaume}} occurrence.s</sup></p>
-            </mat-card>
-          </mat-card-content>
-        </mat-card>
-        <!--to display more content-->
-        <p id ="more_btn_container2" class="{{more_psaumes}}">
-          <button mat-raised-button color="primary" (click)="loadMorePsaumesAndPrayers('psaumes')" class="{{more_psaumes}}">Afficher plus</button>
-        </p>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- prayers -->
-    <mat-card class="{{prayers_container}}">
-      <mat-card-content>
-        <!--toolbar-->
-        <p>
-          <mat-toolbar class="results_tool_bar">
-            <span>Recherche : " {{str}} " <sup class="occ_badge">{{prayersOnlyTotal}} occurrence.s</sup></span>
-          </mat-toolbar>
-        </p>
-        <!--end-->
-        <!--single item : prayer-->
-        <mat-card *ngFor = "let pr of prayers">
-          <mat-card-content>
-            <!--prayer-->
-            <mat-card class="prayer_content clickable" (click)='showPrayer(pr.contenu_priere, pr.numero_priere, pr.nom_archange, pr.numero_psaume, pr.nom_psaume)'>
-              <p class="pr_level">Prière {{pr.numero_priere}} du Psaume {{pr.numero_psaume}} de l'Archange {{pr.nom_archange}} - {{pr.nom_psaume}} <sup class="{{setArchangeColor(pr.nom_archange)}}">{{pr.occ_priere}} occurrence.s</sup></p>
-            </mat-card>
-          </mat-card-content>
-        </mat-card>
-        <!--to display more content-->
-        <p id ="more_btn_container3" class="{{more_prayers}}">
-          <button mat-raised-button color="primary" (click)="loadMorePsaumesAndPrayers('prayers')" class="{{more_prayers}}">Afficher plus</button>
-        </p>
-      </mat-card-content>
-    </mat-card>
-  </mat-card-content>
-</mat-card>
-<!-- end results-->
-
-<!--combine results wrapper-->
-<mat-card class="{{combine_results_status}}">
-  <mat-card-content>
-
-    <!-- combine psaumes and prayers -->
-    <mat-card class="{{combine_psaumes_prayers_container}}">
-      <mat-card-content>
-        <!--toolbar-->
-        <p>
-          <mat-toolbar class="results_tool_bar">
-            <span>Recherche : " {{str_1}}+{{str_2}} " <sup class="occ_badge">{{psaumesAndPrayersCombineTotal}} occurrence.s</sup></span>
-            <span>Psaumes <sup class="occ_badge">{{psaumesCombineTotal}} occurrence.s</sup></span>
-            <span>Prières <sup class="occ_badge">{{prayersCombineTotal}} occurrence.s</sup></span>
-          </mat-toolbar>
-        </p>
-        <!--end-->
-        <mat-card *ngFor = "let cpp of combinePrayersAndPsaumes">
-          <mat-card-content>
-            <!--psaume + prayer-->
-            <mat-card class="clickable" (click)='showPsaumeAndPrayer(cpp.nom_psaume, cpp.contenu_psaume, cpp.contenu_priere, cpp.numero_psaume, cpp.numero_priere, cpp.nom_archange)'>
-              <span class="all_occ_span">Total : {{cpp.occ_total}}</span>
-              <p class="ps_level">Psaume {{cpp.numero_psaume}} de l'Archange {{cpp.nom_archange}} - {{cpp.nom_psaume}} - <span class="combine_search_occ_span">{{str_1}}<sup class="{{setArchangeColor(cpp.nom_archange)}}">{{cpp.occ_psaume_str_1}} occurrence.s</sup> {{str_2}}<sup class="{{setArchangeColor(cpp.nom_archange)}}">{{cpp.occ_psaume_str_2}} occurrence.s</sup></span></p>
-              <p class="pr_level {{setContentStatutForCombine(cpp.occ_priere_str_1, cpp.occ_priere_str_2)}}">Prière {{cpp.numero_priere}} - <span class="combine_search_occ_span">{{str_1}}<sup class="{{setArchangeColor(cpp.nom_archange)}}">{{cpp.occ_priere_str_1}} occurrence.s</sup> {{str_2}}<sup class="{{setArchangeColor(cpp.nom_archange)}}">{{cpp.occ_priere_str_2}} occurrence.s</sup></span></p>
-            </mat-card>
-          </mat-card-content>
-        </mat-card>
-        <!--to display more content-->
-        <p id ="more_btn_container4" class="{{more_combine_psaumes_and_prayers}}">
-          <button mat-raised-button color="primary" (click)="loadMoreCombinePsaumesAndPrayers('psaumes_and_prayers')" class="{{more_combine_psaumes_and_prayers}}">Afficher plus</button>
-        </p>
-      </mat-card-content>
-    </mat-card>
-    <!--end combine psaumes and prayers results -->
-
-    <!--psaume-->
-    <mat-card class="{{combine_psaumes_container}}">
-      <mat-card-content>
-        <!--toolbar-->
-        <p>
-          <mat-toolbar class="results_tool_bar">
-            <span>Recherche : " {{str_1}}+{{str_2}} " <sup class="occ_badge">{{combinePsaumesOnlyTotal}} occurrence.s</sup></span>
-          </mat-toolbar>
-        </p>
-        <!--end-->
-        <!--single item : psaume -->
-        <mat-card *ngFor = "let cps of combinePsaumes">
-          <mat-card-content>
-            <!--psaume-->
-            <mat-card class="clickable" (click)='showPsaume(cps.nom_psaume, cps.contenu_psaume, cps.numero_psaume, cps.nom_archange)'>
-              <span class="all_occ_span">Total : {{cps.occ_total}}</span>
-              <p class="ps_level">Psaume {{cps.numero_psaume}} de l'Archange {{cps.nom_archange}} - {{cps.nom_psaume}} - <span class="combine_search_occ_span">{{str_1}}<sup class="{{setArchangeColor(cps.nom_archange)}}">{{cps.occ_psaume_str_1}} occurrence.s</sup> {{str_2}}<sup class="{{setArchangeColor(cps.nom_archange)}}">{{cps.occ_psaume_str_2}} occurrence.s</sup></span></p>
-            </mat-card>
-          </mat-card-content>
-        </mat-card>
-        <!--to display more content-->
-        <p id ="more_btn_container5" class="{{more_combine_psaumes}}">
-          <button mat-raised-button color="primary" (click)="loadMoreCombinePsaumesAndPrayers('psaumes')" class="{{more_combine_psaumes}}">Afficher plus</button>
-        </p>
-      </mat-card-content>
-    </mat-card>
-    <!-- end combine psaumes results -->
-
-    <!-- combine prayer results -->
-    <mat-card class="{{combine_prayers_container}}">
-      <mat-card-content>
-        <!--toolbar-->
-        <p>
-          <mat-toolbar class="results_tool_bar">
-            <span>Recherche : " {{str_1}}+{{str_2}} " <sup class="occ_badge">{{combinePrayersOnlyTotal}} occurrence.s</sup></span>
-          </mat-toolbar>
-        </p>
-        <!--end-->
-        <!--single item : prayer-->
-        <mat-card *ngFor = "let cpr of combinePrayers">
-          <mat-card-content>
-            <!--prayer-->
-            <mat-card class="prayer_content clickable" (click)='showPrayer(cpr.contenu_priere, cpr.numero_priere, cpr.nom_archange, cpr.numero_psaume, cpr.nom_psaume)'>
-              <span class="all_occ_span">Total : {{cpr.occ_total}}</span>
-              <p class="pr_level">Prière {{cpr.numero_priere}} du Psaume {{cpr.numero_psaume}} de l'Archange {{cpr.nom_archange}} - {{cpr.nom_psaume}} - <span class="combine_search_occ_span">{{str_1}}<sup class="{{setArchangeColor(cpr.nom_archange)}}">{{cpr.occ_priere_str_1}} occurrence.s</sup> {{str_2}}<sup class="{{setArchangeColor(cpr.nom_archange)}}">{{cpr.occ_priere_str_2}} occurrence.s</sup></span></p>
-            </mat-card>
-          </mat-card-content>
-        </mat-card>
-        <!--to display more content-->
-        <p id ="more_btn_container6" class="{{more_combine_prayers}}">
-          <button mat-raised-button color="primary" (click)="loadMoreCombinePsaumesAndPrayers('prayers')" class="{{more_combine_prayers}}">Afficher plus</button>
-        </p>
-      </mat-card-content>
-    </mat-card>
-    <!--end combine prayer results-->
-
-  </mat-card-content>
-</mat-card>
-<!--end combine results-->
-
-
-<!--modal and popup-->
-<div class="process_modal {{modal_status}}">
-  <div class="modal_content">
-    <div class="modal_icon_p">
-      <p class="modal_icon"></p>
-      <p class="modal_text">
-        {{pocess_state}}
+  <!--SEARCH FORM-->
+  <div class="engine_div">
+    <mat-form-field class="search_input">
+      <input #search_str class="search_field" matInput type="text" placeholder="thème, expression ou thème 1 + thème 2" (keyup)="setString(search_str.value)" (change)="setString(search_str.value)">
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)='startSearch()'>Rechercher</button>
+    <!--filters-->
+    <div class="filters_div">
+      <p class="cat-lev-1">
+        <mat-slide-toggle color='primary' class="toogle main_toggle" checked (click)="addSearchFilter('main', 'psaumes')"><b>PSAUMES</b></mat-slide-toggle>
+        <mat-slide-toggle color='primary' class="toogle main_toggle" checked (click)="addSearchFilter('main', 'prayers')"><b>PRIÈRES</b></mat-slide-toggle>
+      </p>
+      <mat-divider class="divider"></mat-divider>
+      <p class="cat-lev-2">
+        <br>
+        <label for="michael" class="gnosis-label michael"><input type="checkbox" name="michael" value="" class="gnosis-checkbox-michael" checked (click)="addSearchFilter('second', 'michael')">MICHAËL</label>
+        <label for="gabriel" class="gnosis-label gabriel"><input type="checkbox" name="gabriel" value="" class="gnosis-checkbox-gabriel" checked (click)="addSearchFilter('second', 'gabriel')">GABRIEL</label>
+        <label for="raphael" class="gnosis-label raphael"><input type="checkbox" name="raphael" value="" class="gnosis-checkbox-raphael" checked (click)="addSearchFilter('second', 'raphael')">RAPHAËL</label>
+        <label for="ouriel" class="gnosis-label ouriel"><input type="checkbox" name="ouriel" value="" class="gnosis-checkbox-ouriel" checked (click)="addSearchFilter('second', 'ouriel')">OURIEL</label>
       </p>
     </div>
-    <p class="abort_btn_container"><button type="button" name="button" class="btn_abort" (click)="abortSearch()">Interrompre</button></p>
   </div>
-</div>
 
-<!--scroll to top-->
-<span id="lok-up-arrow" title="Haut de page" (click)="moveToTop()">&#8593;</span>
-<span id="lok-down-arrow" title="Bas de page" (click)="moveToBottom()">&#8595;</span>
+  <!--results wrapper-->
+  <mat-card class="{{results_status}}">
+    <mat-card-content>
+      <!--psaumes and prayers -->
+      <mat-card class="{{psaumes_prayers_container}}">
+        <mat-card-content>
+          <!--toolbar-->
+          <div>
+            <div class="results_tool_bar">
+              <p>Votre recherche : " {{str}} "</p>
+              <!--<p>Psaumes <sup class="occ_badge">{{psaumesTotal}} occurrence.s</sup></p>
+              <p>Prières <sup class="occ_badge">{{prayersTotal}} occurrence.s</sup></p>-->
+            </div>
+          </div>
+          <!--end-->
+          <mat-card *ngFor = "let pp of prayersAndPsaumes">
+            <mat-card-content>
+              <!--psaume + prayer-->
+              <mat-card class="clickable" (click)='showPsaumeAndPrayer(pp.nom_psaume, pp.contenu_psaume, pp.contenu_priere, pp.numero_psaume, pp.numero_priere, pp.nom_archange)'>
+                <p class="all_occ_span">Total : {{pp.occ_total}}</p>
+                <mat-card-content >
+                  <p class="ps_level"><span class="{{setArchangeColor(pp.nom_archange)}}">Psaume {{pp.numero_psaume}} de l'Archange {{pp.nom_archange}}</span> - {{pp.nom_psaume}} <sup class="occ_badge">{{pp.occ_psaume}} occurrence.s</sup></p>
+                  <p class="pr_level {{setContentStatut(pp.occ_priere)}}">Prière {{pp.numero_priere}} <sup class="occ_badge">{{pp.occ_priere}} occurrence.s</sup></p>
+                </mat-card-content>
+              </mat-card>
+            </mat-card-content>
+          </mat-card>
+          <!--to display more content-->
+          <p id ="more_btn_container1" class="{{more_psaumes_and_prayers}}">
+            <button mat-raised-button color="primary" (click)="loadMorePsaumesAndPrayers('psaumes_and_prayers')" class="{{more_psaumes_and_prayers}}">Afficher plus</button>
+          </p>
+        </mat-card-content>
+      </mat-card>
+
+      <!--psaumes -->
+      <mat-card class="{{psaumes_container}}">
+        <mat-card-content>
+          <!--toolbar-->
+          <div>
+            <div class="results_tool_bar">
+              <p>Votre recherche : " {{str}} "</p>
+            </div>
+          </div>
+          <!--end-->
+          <!--single item : psaume -->
+          <mat-card *ngFor = "let ps of psaumes">
+            <mat-card-content>
+              <!--psaume-->
+              <mat-card class="clickable" (click)='showPsaume(ps.nom_psaume, ps.contenu_psaume, ps.numero_psaume, ps.nom_archange)'>
+                <p class="ps_level"><span class="{{setArchangeColor(ps.nom_archange)}}">Psaume {{ps.numero_psaume}} de l'Archange {{ps.nom_archange}}</span> - {{ps.nom_psaume}} <sup class="occ_badge">{{ps.occ_psaume}} occurrence.s</sup></p>
+              </mat-card>
+            </mat-card-content>
+          </mat-card>
+          <!--to display more content-->
+          <p id ="more_btn_container2" class="{{more_psaumes}}">
+            <button mat-raised-button color="primary" (click)="loadMorePsaumesAndPrayers('psaumes')" class="{{more_psaumes}}">Afficher plus</button>
+          </p>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- prayers -->
+      <mat-card class="{{prayers_container}}">
+        <mat-card-content>
+          <!--toolbar-->
+          <div>
+            <div class="results_tool_bar">
+              <p>Votre recherche : " {{str}} "</p>
+            </div>
+          </div>
+          <!--end-->
+          <!--single item : prayer-->
+          <mat-card *ngFor = "let pr of prayers">
+            <mat-card-content>
+              <!--prayer-->
+              <mat-card class="prayer_content clickable" (click)='showPrayer(pr.contenu_priere, pr.numero_priere, pr.nom_archange, pr.numero_psaume, pr.nom_psaume)'>
+                <p class="pr_level"><span class="{{setArchangeColor(pr.nom_archange)}}">Prière {{pr.numero_priere}} du Psaume {{pr.numero_psaume}} de l'Archange {{pr.nom_archange}}</span> - {{pr.nom_psaume}} <sup class="occ_badge">{{pr.occ_priere}} occurrence.s</sup></p>
+              </mat-card>
+            </mat-card-content>
+          </mat-card>
+          <!--to display more content-->
+          <p id ="more_btn_container3" class="{{more_prayers}}">
+            <button mat-raised-button color="primary" (click)="loadMorePsaumesAndPrayers('prayers')" class="{{more_prayers}}">Afficher plus</button>
+          </p>
+        </mat-card-content>
+      </mat-card>
+    </mat-card-content>
+  </mat-card>
+  <!-- end results-->
+
+  <!--combine results wrapper-->
+  <mat-card class="{{combine_results_status}}">
+    <mat-card-content>
+      <!-- combine psaumes and prayers -->
+      <mat-card class="{{combine_psaumes_prayers_container}}">
+        <mat-card-content>
+          <!--toolbar-->
+          <div>
+            <div class="results_tool_bar">
+              <p>Votre recherche : " {{str_1}}+{{str_2}} "</p>
+              <!--<p>Psaumes <sup class="occ_badge">{{psaumesCombineTotal}} occurrence.s</sup></p>
+              <p>Prières <sup class="occ_badge">{{prayersCombineTotal}} occurrence.s</sup></p>-->
+            </div>
+          </div>
+          <!--end-->
+          <mat-card *ngFor = "let cpp of combinePrayersAndPsaumes">
+            <mat-card-content>
+              <!--psaume + prayer-->
+              <mat-card class="clickable" (click)='showPsaumeAndPrayer(cpp.nom_psaume, cpp.contenu_psaume, cpp.contenu_priere, cpp.numero_psaume, cpp.numero_priere, cpp.nom_archange)'>
+                <p class="all_occ_span">Total : {{cpp.occ_total}}</p>
+                <p class="ps_level"><span class="{{setArchangeColor(cpp.nom_archange)}}">Psaume {{cpp.numero_psaume}} de l'Archange {{cpp.nom_archange}}</span> - {{cpp.nom_psaume}} - <span class="combine_search_occ_span">{{str_1}}<sup class="occ_badge">{{cpp.occ_psaume_str_1}} occurrence.s</sup> {{str_2}}<sup class="occ_badge">{{cpp.occ_psaume_str_2}} occurrence.s</sup></span></p>
+                <p class="pr_level {{setContentStatutForCombine(cpp.occ_priere_str_1, cpp.occ_priere_str_2)}}">Prière {{cpp.numero_priere}} - <span class="combine_search_occ_span">{{str_1}}<sup class="occ_badge">{{cpp.occ_priere_str_1}} occurrence.s</sup> {{str_2}}<sup class="occ_badge">{{cpp.occ_priere_str_2}} occurrence.s</sup></span></p>
+              </mat-card>
+            </mat-card-content>
+          </mat-card>
+          <!--to display more content-->
+          <p id ="more_btn_container4" class="{{more_combine_psaumes_and_prayers}}">
+            <button mat-raised-button color="primary" (click)="loadMoreCombinePsaumesAndPrayers('psaumes_and_prayers')" class="{{more_combine_psaumes_and_prayers}}">Afficher plus</button>
+          </p>
+        </mat-card-content>
+      </mat-card>
+      <!--end combine psaumes and prayers results -->
+
+      <!--psaume-->
+      <mat-card class="{{combine_psaumes_container}}">
+        <mat-card-content>
+          <!--toolbar-->
+          <div>
+            <div class="results_tool_bar">
+              <p>Votre recherche : " {{str_1}}+{{str_2}} "</p>
+            </div>
+          </div>
+          <!--end-->
+          <!--single item : psaume -->
+          <mat-card *ngFor = "let cps of combinePsaumes">
+            <mat-card-content>
+              <!--psaume-->
+              <mat-card class="clickable" (click)='showPsaume(cps.nom_psaume, cps.contenu_psaume, cps.numero_psaume, cps.nom_archange)'>
+                <p class="all_occ_span">Total : {{cps.occ_total}}</p>
+                <p class="ps_level"><span class="{{setArchangeColor(cps.nom_archange)}}">Psaume {{cps.numero_psaume}} de l'Archange {{cps.nom_archange}}</span> - {{cps.nom_psaume}} - <span class="combine_search_occ_span">{{str_1}}<sup class="occ_badge">{{cps.occ_psaume_str_1}} occurrence.s</sup> {{str_2}}<sup class="occ_badge">{{cps.occ_psaume_str_2}} occurrence.s</sup></span></p>
+              </mat-card>
+            </mat-card-content>
+          </mat-card>
+          <!--to display more content-->
+          <p id ="more_btn_container5" class="{{more_combine_psaumes}}">
+            <button mat-raised-button color="primary" (click)="loadMoreCombinePsaumesAndPrayers('psaumes')" class="{{more_combine_psaumes}}">Afficher plus</button>
+          </p>
+        </mat-card-content>
+      </mat-card>
+      <!-- end combine psaumes results -->
+
+      <!-- combine prayer results -->
+
+      <mat-card class="{{combine_prayers_container}}">
+        <mat-card-content>
+          <!--toolbar-->
+          <div>
+            <div class="results_tool_bar">
+              <p>Votre recherche : " {{str_1}}+{{str_2}} "</p>
+            </div>
+          </div>
+          <!--end-->
+          <!--single item : prayer-->
+          <mat-card *ngFor = "let cpr of combinePrayers">
+            <mat-card-content>
+              <!--prayer-->
+              <mat-card class="prayer_content clickable" (click)='showPrayer(cpr.contenu_priere, cpr.numero_priere, cpr.nom_archange, cpr.numero_psaume, cpr.nom_psaume)'>
+                <p class="all_occ_span">Total : {{cpr.occ_total}}</p>
+                <p class="pr_level"><span class="{{setArchangeColor(cpr.nom_archange)}}">Prière {{cpr.numero_priere}} du Psaume {{cpr.numero_psaume}} de l'Archange {{cpr.nom_archange}}</span> - {{cpr.nom_psaume}} - <span class="combine_search_occ_span">{{str_1}}<sup class="occ_badge">{{cpr.occ_priere_str_1}} occurrence.s</sup> {{str_2}}<sup class="occ_badge">{{cpr.occ_priere_str_2}} occurrence.s</sup></span></p>
+              </mat-card>
+            </mat-card-content>
+          </mat-card>
+          <!--to display more content-->
+          <p id ="more_btn_container6" class="{{more_combine_prayers}}">
+            <button mat-raised-button color="primary" (click)="loadMoreCombinePsaumesAndPrayers('prayers')" class="{{more_combine_prayers}}">Afficher plus</button>
+          </p>
+        </mat-card-content>
+      </mat-card>
+      <!--end combine prayer results-->
+
+    </mat-card-content>
+  </mat-card>
+  <!--end combine results-->
+
+
+  <!--modal and popup-->
+  <div class="process_modal {{modal_status}}">
+    <div class="modal_content">
+      <div class="modal_icon_p">
+        <p class="modal_icon"></p>
+        <p class="modal_text">
+          {{pocess_state}}
+        </p>
+      </div>
+      <p class="abort_btn_container"><button type="button" name="button" class="btn_abort" (click)="abortSearch()">Interrompre</button></p>
+    </div>
+  </div>
+
+  <!--scroll to top-->
+  <span id="lok-up-arrow" title="Haut de page" (click)="moveToTop()">&#8593;</span>
+  <span id="lok-down-arrow" title="Bas de page" (click)="moveToBottom()">&#8595;</span>
+
+</div>

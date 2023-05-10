@@ -1,6 +1,5 @@
-<h2 mat-dialog-title>Visioneuse</h2>
+<h2 mat-dialog-title [innerHtml]="title" class="{{setArchangeColor(nomArchange)}}"></h2>
 <mat-dialog-content>
-  <span class="ps_level {{setArchangeColor(nomArchange)}}">{{title}}</span>
   <p [innerHtml]="psaume" ></p>
   <!--modal-->
   <div class="process_modal {{modal_status}}">

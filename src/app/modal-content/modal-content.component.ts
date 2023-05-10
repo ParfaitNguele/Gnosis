@@ -18,7 +18,7 @@ export class ModalContentComponent {
   modal_status:string = "hidden";
   constructor(public engine:EngineHandlerService, public dialogRef:MatDialogRef<ModalContentComponent>,
   @Inject(MAT_DIALOG_DATA) public data: {title:string, psaume:string, priere:string, numero_psaume:string, numero_priere:string, nom_archange:string}){
-    this.title = "Psaume " + data.numero_psaume + " de l'Archange " + data.nom_archange + " - " + data.title;
+    this.title = "Psaume " + data.numero_psaume + " de l'Archange " + data.nom_archange + " : <br/> " + data.title;
     this.psaume = data.psaume;
     this.priere = data.priere;
     this.psaumeNbr = data.numero_psaume;
@@ -60,13 +60,13 @@ export class ModalContentComponent {
   setArchangeColor(archange:string){
     let color = "";
     if(archange === "MICHAËL"){
-      color = "blue";
+      color = "red";
     }else if(archange === "RAPHAËL"){
       color = "green";
     }else if(archange === "GABRIEL"){
-      color = "orange";
+      color = "blue";
     }else if(archange === "OURIEL"){
-      color = "red";
+      color = "yellow";
     }
     return color;
   }

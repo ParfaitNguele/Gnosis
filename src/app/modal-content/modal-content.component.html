@@ -1,6 +1,7 @@
-<h2 mat-dialog-title>Visioneuse</h2>
+<h2 mat-dialog-title [innerHtml]= "title" class="{{setArchangeColor(nomArchange)}}"></h2>
 <mat-dialog-content>
-  <span class="ps_level {{setArchangeColor(nomArchange)}}">{{title}}</span>
+  <!--
+  <span class="ps_level {{setArchangeColor(nomArchange)}}">{{title}}</span>-->
   <p [innerHtml]= "psaume"></p>
   <span class="pr_level">Prière : {{prayerNbr}}</span>
   <p class="prayer_content">{{priere}}</p>
