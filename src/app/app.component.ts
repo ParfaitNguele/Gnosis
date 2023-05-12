@@ -93,6 +93,27 @@ export class AppComponent {
   resultsTotal:number = 0;
   resultsTotalStatus:string = "hidden";
   //
+  //digit
+  digit_results_status:string = "hidden";
+  digit_psaumes_prayers_container:string = "hidden";
+  digit_psaumes_container:string = "hidden";
+  digit_prayers_container:string = "hidden";
+  psaumesDigitTotal:number = 0;
+  prayersDigitTotal:number = 0;
+  psaumesAndPrayersDigitTotal:number = 0;
+  ppDiStore:Array<any> = [];
+  psDiStore:Array<any> = [];
+  prDiStore:Array<any> = [];
+  digitPrayersAndPsaumes:Array<any> = [];
+  diPsaumes:Array<any> = [];
+  diPrayers:Array<any> = [];
+  digit_more_psaumes_and_prayers:string = "hidden";
+  digit_more_psaumes:string = "hidden";
+  digit_more_prayers:string = "hidden";
+  di_psaumesAndPrayersIndex:number = 100;
+  di_psaumesIndex:number = 100;
+  di_prayersIndex:number = 100;
+
   constructor(private engine:EngineHandlerService, public helper:HelperService, public dialog: MatDialog){
 
     //this.test();
@@ -188,6 +209,7 @@ export class AppComponent {
     this.prayers_container = 'hidden';
     //hide combine search results blocks
     this.combine_results_status = 'hidden';
+    this.digit_results_status = "hidden";
   }
   getReadyPsaumesAndPrayers(sorted_occ:Array<any>, psaumes_and_prayers:Array<any>){
     let readyData:Array<any> = [];
@@ -268,6 +290,7 @@ export class AppComponent {
     this.prayers_container = 'hidden';
     //hide combine search results blocks
     this.combine_results_status = 'hidden';
+    this.digit_results_status = "hidden";
   }
   /*
   * * To manage prayers when selected
@@ -289,28 +312,48 @@ export class AppComponent {
     this.psaumes_container = 'hidden';
     //hide combine search results block
     this.combine_results_status = 'hidden';
+    this.digit_results_status = "hidden";
   }
   /*
   * * search managers
   */
   startSearch(){
-    if(/\+/.test(this.str)){
-      if(this.str.length > 3 && /[A-Za-z]+/.test(this.str)){
-        if(this.verifyCombineSearch() === true){
-          this.modal_status = "";
-          this.pocess_state = "Recherche...";
-          //hide previous results
-          this.combine_results_status = 'hidden';
-          this.engine.initEngineForCombine([this.str_1, this.str_2], this.main_filters, this.second_filters)
-          .subscribe(
-            res =>this.managecombineSearchRes(res),
-            err =>this.managecombineSearchErr(err)
-          );
+    if(/\+/.test(this.str) || /"/.test(this.str)){
+      if(/\+/.test(this.str)){
+        if(this.str.length > 3 && /[A-Za-z]+/.test(this.str)){
+          if(this.verifyCombineSearch() === true){
+            this.modal_status = "";
+            this.pocess_state = "Recherche...";
+            //hide previous results
+            this.combine_results_status = 'hidden';
+            this.engine.initEngineForCombine([this.str_1, this.str_2], this.main_filters, this.second_filters)
+            .subscribe(
+              res =>this.managecombineSearchRes(res),
+              err =>this.managecombineSearchErr(err)
+            );
+          }else{
+            alert("Votre recherche combinée n'est pas valide.");
+          }
         }else{
-          alert("Votre recherche combinée n'est pas valide.");
+          alert("Veuillez fournir une recherche combinée valide.");
         }
       }else{
-        alert("Veuillez fournir une recherche combinée valide.");
+        if(/"/.test(this.str)){
+          let arr_dig = this.str.split('"');
+          if(arr_dig.length === 3 && /[0-9]+/.test(arr_dig[1])){
+            this.modal_status = "";
+            this.pocess_state = "Recherche...";
+            //hide previous results
+            this.digit_results_status = 'hidden';
+            this.engine.initEngineForDigit(arr_dig[1], this.main_filters, this.second_filters)
+            .subscribe(
+              res =>this.manageDigitRes(res),
+              err =>this.manageDigitErr(err)
+            );
+          }else{
+            alert('Veuillez saisir une recherche de chiffre valide. Exemple : "6"');
+          }
+        }
       }
     }else{
       if(this.str.length < 1 || !/[A-Za-z]+/.test(this.str)){
@@ -360,6 +403,7 @@ export class AppComponent {
   }
   manageSearchErr(err:any){
     this.modal_status = "hidden";
+    console.log(err);
     alert("Une erreur s'est produite.");
   }
   /*
@@ -403,6 +447,7 @@ export class AppComponent {
   }
   managecombineSearchErr(err:any){
     this.modal_status = "hidden";
+    console.log(err);
     alert("Une erreur s'est produite.");
   }
   spliteCombineArrayDefault(arr_to_slice:Array<any>, tag:string){
@@ -446,6 +491,7 @@ export class AppComponent {
     this.combine_prayers_container = 'hidden';
     //hide simple results block
     this.results_status = 'hidden';
+    this.digit_results_status = "hidden";
   }
   orderCombinePsaumes(data:any){
     this.combinePsaumesOnlyTotal = data.psaumes_total;
@@ -464,6 +510,7 @@ export class AppComponent {
     this.combine_prayers_container = 'hidden';
     //hide simple results block
     this.results_status = 'hidden';
+    this.digit_results_status = "hidden";
   }
   orderCombinePrayers(data:any){
     this.combinePrayersOnlyTotal = data.prayers_total;
@@ -481,6 +528,7 @@ export class AppComponent {
     this.combine_psaumes_container = 'hidden';
     //hide simple search results block
     this.results_status = 'hidden';
+    this.digit_results_status = "hidden";
   }
   loadMoreCombinePsaumesAndPrayers(tag:string){
     if(tag === "psaumes_and_prayers"){
@@ -530,6 +578,174 @@ export class AppComponent {
       }
     }
   }
+  /*
+  * * For digit search
+  */
+  manageDigitRes(res:any){
+    if(res === null){
+      this.modal_status = "hidden";
+      alert("Diffile de trouver des occurrences. Affinez votre recherche.");
+    }else{
+      if(res.error === true){
+        alert(res.message);
+      }else{
+        if(res.content.length < 1){
+          this.modal_status = "hidden";
+          alert("Aucune occurrence trouvée.");
+        }else{
+          if(this.main_filters.indexOf('psaumes') !== -1 && this.main_filters.indexOf('prayers') !== -1){
+            this.orderDigitPsaumesAndPrayers(res);
+          }else{
+            if(this.main_filters.indexOf('psaumes') !== -1){
+              this.orderDigitPsaumes(res);
+            }else{
+              this.orderDigitPrayers(res);
+            }
+          }
+        }
+      }
+    }
+  }
+  manageDigitErr(err:any){
+    this.modal_status = "hidden";
+    console.log(err);
+    alert("Une erreur s'est produite.");
+  }
+  orderDigitPsaumesAndPrayers(data:any){
+    this.psaumesDigitTotal = 0;
+    this.prayersDigitTotal = 0;
+    this.psaumesAndPrayersDigitTotal = 0;
+    //
+    this.psaumesDigitTotal = data.psaumes_total;
+    this.prayersDigitTotal = data.prayers_total;
+    this.psaumesAndPrayersDigitTotal = data.psaumes_and_prayers_total;
+
+    let sortedOcc = this.sortArrayDesc(data.occurrences);
+    let arrangedArr = this.getReadyPsaumesAndPrayers(sortedOcc, data.content);
+    this.ppDiStore = arrangedArr;
+    let splited = this.spliteDigitArrayDefault(arrangedArr, "psaumes_and_prayers");
+    this.digitPrayersAndPsaumes = splited;
+    //hide loader
+    this.modal_status = "hidden";
+    this.digit_psaumes_prayers_container = "";
+    this.digit_results_status = '';
+    //hide other blocks
+    this.digit_psaumes_container = 'hidden';
+    this.digit_prayers_container = 'hidden';
+    this.results_status = 'hidden';
+    this.combine_results_status = 'hidden';
+  }
+
+  orderDigitPsaumes(data:any){
+    this.psaumesDigitTotal = data.psaumes_total;
+    //
+    let sortedOcc = this.sortArrayDesc(data.occurrences);
+    let arrangedArr = this.getReadyPsaumesAndPrayers(sortedOcc, data.content);
+    this.psDiStore = arrangedArr;
+    let splited = this.spliteDigitArrayDefault(arrangedArr, "psaumes");
+    this.diPsaumes = splited;
+    //hide loader
+    this.modal_status = "hidden";
+    this.digit_results_status = '';
+    this.digit_psaumes_container = "";
+    //hide other blocks
+    this.digit_psaumes_prayers_container = 'hidden';
+    this.digit_prayers_container = 'hidden';
+    //hide combine search results blocks
+    this.combine_results_status = 'hidden';
+    this.results_status = 'hidden';
+  }
+
+  orderDigitPrayers(data:any){
+    this.prayersDigitTotal = data.prayers_total;
+    //
+    let sortedOcc = this.sortArrayDesc(data.occurrences);
+    let arrangedArr = this.getReadyPsaumesAndPrayers(sortedOcc, data.content);
+    this.prDiStore = arrangedArr;
+    let splited = this.spliteArrayDefault(arrangedArr, "prayers");
+    this.diPrayers = splited;
+    //hide loader
+    this.modal_status = "hidden";
+    this.digit_results_status = '';
+    this.digit_prayers_container = "";
+    //hide other blocks
+    this.digit_psaumes_prayers_container = "hidden";
+    this.digit_psaumes_container = 'hidden';
+    //hide combine search results block
+    this.combine_results_status = 'hidden';
+    this.results_status = "hidden";
+  }
+  spliteDigitArrayDefault(arr_to_slice:Array<any>, tag:string){
+    let length = arr_to_slice.length;
+    if(length < 100){
+      if(tag === "psaumes_and_prayers"){
+        this.digit_more_psaumes_and_prayers = "hidden";
+      }else if(tag === "psaumes"){
+        this.digit_more_psaumes = "hidden";
+      }else if(tag === "prayers"){
+        this.digit_more_prayers = "hidden";
+      }
+      return arr_to_slice;
+    }else{
+      if(tag === "psaumes_and_prayers"){
+        this.digit_more_psaumes_and_prayers = "";
+      }else if(tag === "psaumes"){
+        this.digit_more_psaumes = "";
+      }else if(tag === "prayers"){
+        this.digit_more_prayers = "";
+      }
+      return arr_to_slice.slice(0, 100);
+    }
+  }
+  loadMoreDigitPsaumesAndPrayers(tag:string){
+    if(tag === "psaumes_and_prayers"){
+      let prev_index = this.di_psaumesAndPrayersIndex;
+      let data = this.ppDiStore;
+      let length = data.length - prev_index;
+      if(length <= 100){
+        let new_slice = data.slice(prev_index + 1, -1);
+        this.di_psaumesAndPrayersIndex+= length;
+        this.digit_more_psaumes_and_prayers = "hidden";
+        this.digitPrayersAndPsaumes = this.digitPrayersAndPsaumes.concat(new_slice);
+      }else{
+        this.di_psaumesAndPrayersIndex+= 100;
+        let data_to_load = this.ppStore.slice(prev_index + 1, this.di_psaumesAndPrayersIndex);
+        this.digit_more_psaumes_and_prayers = "";
+        this.digitPrayersAndPsaumes = this.digitPrayersAndPsaumes.concat(data_to_load);
+      }
+    }else if(tag === "psaumes"){
+      let prev_index = this.di_psaumesIndex;
+      let data = this.psDiStore;
+      let length = data.length - prev_index;
+      if(length <= 100){
+        let new_slice = data.slice(prev_index + 1, -1);
+        this.di_psaumesIndex+= length;
+        this.digit_more_psaumes = "hidden";
+        this.diPsaumes = this.diPsaumes.concat(new_slice);
+      }else{
+        this.di_psaumesIndex+= 100;
+        let data_to_load = this.psDiStore.slice(prev_index + 1, this.di_psaumesIndex);
+        this.digit_more_psaumes = "";
+        this.diPsaumes = this.diPsaumes.concat(data_to_load);
+      }
+    }else if(tag === "prayers"){
+      let prev_index = this.di_prayersIndex;
+      let data = this.prDiStore;
+      let length = data.length - prev_index;
+      if(length <= 100){
+        let new_slice = data.slice(prev_index + 1, -1);
+        this.di_prayersIndex+= length;
+        this.digit_more_prayers = "hidden";
+        this.diPrayers = this.diPrayers.concat(new_slice);
+      }else{
+        this.di_prayersIndex+= 100;
+        let data_to_load = this.prDiStore.slice(prev_index + 1, this.di_prayersIndex);
+        this.digit_more_prayers = "";
+        this.diPrayers = this.diPrayers.concat(data_to_load);
+      }
+    }
+  }
+
   /*
   * * modals methods
   */

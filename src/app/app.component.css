@@ -5,10 +5,10 @@
 .engine_div{
   text-align: center;
 }
-.search_input
+.search_input, .search_field
 {
   width: 50%;
-  margin-right: 10px;
+  margin:auto ;
 }
 .logo_div
 {
@@ -18,8 +18,14 @@
 .logo_img
 {
   margin-top: 0px;
-  max-width: 300px;
-  max-height: 300px;
+  height: 350px;
+}
+.logo_img_mobile{
+  display: none;
+}
+.tool_description{
+  width: 80%;
+  margin: auto;
 }
 .toogle
 {
@@ -158,7 +164,7 @@ modal
   cursor: pointer;
   border: solid 1px #011d73;
 }
-.abort_btn_container, #more_btn_container1, #more_btn_container2, #more_btn_container3, #more_btn_container4, #more_btn_container5, #more_btn_container6{
+.abort_btn_container, #more_btn_container1, #more_btn_container2, #more_btn_container3, #more_btn_container4, #more_btn_container5, #more_btn_container6, #more_btn_container7, #more_btn_container8, #more_btn_container9{
   text-align: center;
 }
 .combine_search_occ_span{
@@ -229,4 +235,26 @@ label{
   font-weight: bold;
   padding: 5px;
   font-size: 18px;
+}
+@media screen and (max-width:500px) {
+  .logo_img{
+    display: none;
+  }
+  .logo_img_mobile{
+    display: inline;
+  }
+  .search_input, .search_field{
+    width: 80%;
+  }
+}
+@media screen and (min-width:500px) {
+  .logo_img{
+    display: inline;
+  }
+  .logo_img_mobile{
+    display: none;
+  }
+  .search_field{
+    width: 50%;
+  }
 }

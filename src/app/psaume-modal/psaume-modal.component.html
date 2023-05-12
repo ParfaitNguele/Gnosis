@@ -1,6 +1,10 @@
-<h2 mat-dialog-title [innerHtml]="title" class="{{setArchangeColor(nomArchange)}}"></h2>
 <mat-dialog-content>
+  <h2 [innerHtml]="title" class="{{setArchangeColor(nomArchange)}}"></h2>
   <p [innerHtml]="psaume" ></p>
+  <div class="shower-togglers">
+    <button mat-raised-button color="primary" (click)='initPrint()'>Télécharger</button>
+    <button mat-raised-button (click)='closeDialog()'>Fermer</button>
+  </div>
   <!--modal-->
   <div class="process_modal {{modal_status}}">
     <div class="modal_content">
@@ -14,7 +18,3 @@
   </div>
   <!-- end modal-->
 </mat-dialog-content>
-<mat-dialog-actions class="shower-togglers">
-  <button mat-raised-button color="primary" (click)='initPrint()'>Télécharger</button>
-  <button mat-raised-button (click)='closeDialog()'>Fermer</button>
-</mat-dialog-actions>
