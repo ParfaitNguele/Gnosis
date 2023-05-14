@@ -27,6 +27,13 @@
   width: 80%;
   margin: auto;
 }
+.special_notice{
+  font-size: 10px;
+  font-weight: bold;
+  background-color: #011d73;
+  color: white;
+  padding: 5px;
+}
 .toogle
 {
   font-weight: bold;

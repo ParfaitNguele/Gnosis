@@ -13,6 +13,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatTooltipModule} from '@angular/material/tooltip';
 //end
 //services
 import { EngineHandlerService } from './services/engine-handler.service';
@@ -51,7 +52,8 @@ import { HowComponent } from './how/how.component';
     MatCardModule,
     MatBadgeModule,
     MatDialogModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTooltipModule
   ],
   providers: [EngineHandlerService, HelperService, UrlProviderService],
   bootstrap: [AppComponent]

@@ -1,12 +1,10 @@
-<mat-dialog-content>
-  <h2 [innerHtml]= "title" class="{{setArchangeColor(nomArchange)}}"></h2>
+<h2 mat-dialog-title [innerHtml]= "title" class="{{setArchangeColor(nomArchange)}}"></h2>
+<mat-dialog-content class="resized-dialog">
   <p [innerHtml]= "psaume"></p>
-  <span class="pr_level">Prière : {{prayerNbr}}</span>
+  <p class="pr_title">
+    <span class="pr_level">Prière {{prayerNbr}}</span>
+  </p>
   <p class="prayer_content">{{priere}}</p>
-  <div class="shower-togglers">
-    <button mat-raised-button color="primary" (click)='initPrint()'>Télécharger</button>
-    <button mat-raised-button (click)='closeDialog()'>Fermer</button>
-  </div>
   <!--modal-->
   <div class="process_modal {{modal_status}}">
     <div class="modal_content">
@@ -20,3 +18,7 @@
   </div>
   <!-- end modal-->
 </mat-dialog-content>
+<mat-dialog-actions class="shower-togglers">
+  <button mat-raised-button color="primary" (click)='initPrint()'>Télécharger</button>
+  <button mat-raised-button (click)='closeDialog()'>Fermer</button>
+</mat-dialog-actions>

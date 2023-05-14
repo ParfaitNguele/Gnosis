@@ -321,16 +321,21 @@ export class AppComponent {
     if(/\+/.test(this.str) || /"/.test(this.str)){
       if(/\+/.test(this.str)){
         if(this.str.length > 3 && /[A-Za-z]+/.test(this.str)){
-          if(this.verifyCombineSearch() === true){
-            this.modal_status = "";
-            this.pocess_state = "Recherche...";
-            //hide previous results
-            this.combine_results_status = 'hidden';
-            this.engine.initEngineForCombine([this.str_1, this.str_2], this.main_filters, this.second_filters)
-            .subscribe(
-              res =>this.managecombineSearchRes(res),
-              err =>this.managecombineSearchErr(err)
-            );
+          if(this.verifyCombineSearch() === true && this.containsSpecialChars(this.str_1) === false && this.containsSpecialChars(this.str_2) === false){
+
+            if(this.main_filters.length === 0 || this.second_filters.length === 0){
+              alert("Veuillez choisir au moins une catégorie (Psaumes, Prières) et un archange (Michael, Gabriel, Raphael, Ouriel).");
+            }else{
+              this.modal_status = "";
+              this.pocess_state = "Recherche...";
+              //hide previous results
+              this.combine_results_status = 'hidden';
+              this.engine.initEngineForCombine([this.str_1, this.str_2], this.main_filters, this.second_filters)
+              .subscribe(
+                res =>this.managecombineSearchRes(res),
+                err =>this.managecombineSearchErr(err)
+              );
+            }
           }else{
             alert("Votre recherche combinée n'est pas valide.");
           }
@@ -340,23 +345,28 @@ export class AppComponent {
       }else{
         if(/"/.test(this.str)){
           let arr_dig = this.str.split('"');
-          if(arr_dig.length === 3 && /[0-9]+/.test(arr_dig[1])){
-            this.modal_status = "";
-            this.pocess_state = "Recherche...";
-            //hide previous results
-            this.digit_results_status = 'hidden';
-            this.engine.initEngineForDigit(arr_dig[1], this.main_filters, this.second_filters)
-            .subscribe(
-              res =>this.manageDigitRes(res),
-              err =>this.manageDigitErr(err)
-            );
+          if(arr_dig.length === 3 && /[0-9]+/.test(arr_dig[1]) && this.containsSpecialChars(arr_dig[1]) === false){
+
+            if(this.main_filters.length === 0 || this.second_filters.length === 0){
+              alert("Veuillez choisir au moins une catégorie (Psaumes, Prières) et un archange (Michael, Gabriel, Raphael, Ouriel).");
+            }else{
+              this.modal_status = "";
+              this.pocess_state = "Recherche...";
+              //hide previous results
+              this.digit_results_status = 'hidden';
+              this.engine.initEngineForDigit(arr_dig[1], this.main_filters, this.second_filters)
+              .subscribe(
+                res =>this.manageDigitRes(res),
+                err =>this.manageDigitErr(err)
+              );
+            }
           }else{
             alert('Veuillez saisir une recherche de chiffre valide. Exemple : "6"');
           }
         }
       }
     }else{
-      if(this.str.length < 1 || !/[A-Za-z]+/.test(this.str)){
+      if(this.str.length < 1 || !/[A-Za-z]+/.test(this.str) || this.containsSpecialChars(this.str) === true){
         alert("Veuillez saisir un mot-clé valide !");
       }else{
         if(this.main_filters.length === 0 || this.second_filters.length === 0){
@@ -870,6 +880,10 @@ export class AppComponent {
   setResultsTotal(total:number){
     this.resultsTotal = total;
     this.resultsTotalStatus = "";
+  }
+  containsSpecialChars(str:string) {
+    const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    return specialChars.test(str);
   }
   test(){
   }

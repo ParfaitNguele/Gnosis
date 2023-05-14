@@ -16,9 +16,10 @@
   <div class="engine_div">
     <mat-form-field class="search_input">
       <input #search_str class="search_field" matInput type="text" placeholder='thème, expression, thème 1 + thème 2 ou "chiffre"' (keyup)="setString(search_str.value)" (change)="setString(search_str.value)" (keyup.enter)='startSearch()'>
-    </mat-form-field>
+    </mat-form-field><br>
+    <span class="special_notice">Les caractères spéciaux autres que + et " sont interdits !</span>
     <!--filters-->
-    <div class="filters_div">
+    <div class="filters_div"><br>
       <p class="cat-lev-1">
         <mat-slide-toggle color='primary' class="toogle main_toggle" checked (click)="addSearchFilter('main', 'psaumes')"><b>PSAUMES</b></mat-slide-toggle>
         <mat-slide-toggle color='primary' class="toogle main_toggle" checked (click)="addSearchFilter('main', 'prayers')"><b>PRIÈRES</b></mat-slide-toggle>

@@ -16,7 +16,7 @@ export class PrayerModalComponent {
   constructor(public engine:EngineHandlerService, public dialogRef:MatDialogRef<PrayerModalComponent>,
   @Inject(MAT_DIALOG_DATA) public data: {numero_priere:string, contenu_priere:string, nom_archange:string, numero_psaume:string, nom_psaume:string}){
     this.priere = data.contenu_priere;
-    this.prayerNbr = "Évangile de l'Archange " + data.nom_archange + " - Prière " + data.numero_priere + " du Psaume " + data.numero_psaume + " de l'Archange " + data.nom_archange + " : <br/> " + data.nom_psaume;
+    this.prayerNbr = "Prière " + data.numero_priere + " du Psaume " + data.numero_psaume + " de l'Archange " + data.nom_archange + " : <br/> " + data.nom_psaume;
     this.nomArchange = data.nom_archange;
   }
   closeDialog(){
