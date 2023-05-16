@@ -4,9 +4,9 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class UrlProviderService {
-  root:string = 'https://adaptaccessoires.com/gnosis/api/in/';
-  creators_root:string = 'https://adaptaccessoires.com/gnosis/api/tools/';
-  downloadDir:string = 'https://adaptaccessoires.com/gnosis/api/tools/temp/';
+  root:string = 'https://gnosis.ecole-essenienne.world/api/in/';
+  creators_root:string = 'https://gnosis.ecole-essenienne.world/api/tools/';
+  downloadDir:string = 'https://gnosis.ecole-essenienne.world/api/tools/temp/';
   //POST
   search:string = this.root + 'search.php';
   combine_search:string = this.root + 'combine-search.php';

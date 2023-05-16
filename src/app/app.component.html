@@ -4,12 +4,12 @@
   <!--TOOL LOGO-->
   <div class="logo_div">
     <p>
-      <img class="logo_img" alt="Lok" title='Gnosis' src="assets/images/gnosis-logo-vertical.jpg">
-      <img class="logo_img_mobile" alt="Lok" title='Gnosis' src="assets/images/gnosis-logo-mobile.jpg">
+      <img class="gnosis_logo_img" alt="Logo Gnosis" title='Gnosis' src="assets/images/gnosis-logo-original.jpg">
     </p>
     <p class="tool_description">
-      L'outil qui vous permet de rechercher les occurrences d'un thème dans la Bible Essénienne.<br> <span class="how_trigger" (click)="shohHowItWorksModal()">Comment ça marche ?</span>
-    </p>
+      L'outil qui vous permet de rechercher les occurrences d'un thème dans la Bible Essénienne.<br><br>
+      <span class="how_trigger_btn" (click)="shohHowItWorksModal()">Important : voir la notice</span>
+    </p><br>
 </div>
 
   <!--SEARCH FORM-->
@@ -17,9 +17,8 @@
     <mat-form-field class="search_input">
       <input #search_str class="search_field" matInput type="text" placeholder='thème, expression, thème 1 + thème 2 ou "chiffre"' (keyup)="setString(search_str.value)" (change)="setString(search_str.value)" (keyup.enter)='startSearch()'>
     </mat-form-field><br>
-    <span class="special_notice">Les caractères spéciaux autres que + et " sont interdits !</span>
     <!--filters-->
-    <div class="filters_div"><br>
+    <div class="filters_div">
       <p class="cat-lev-1">
         <mat-slide-toggle color='primary' class="toogle main_toggle" checked (click)="addSearchFilter('main', 'psaumes')"><b>PSAUMES</b></mat-slide-toggle>
         <mat-slide-toggle color='primary' class="toogle main_toggle" checked (click)="addSearchFilter('main', 'prayers')"><b>PRIÈRES</b></mat-slide-toggle>

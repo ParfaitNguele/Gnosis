@@ -15,24 +15,24 @@
   margin-top: 0px;
   text-align: center;
 }
-.logo_img
-{
-  margin-top: 0px;
-  height: 350px;
-}
-.logo_img_mobile{
-  display: none;
+.gnosis_logo_img{
+  width: 500px;
+  height: 281,25px;
 }
 .tool_description{
   width: 80%;
   margin: auto;
+  font-size: 17px;
 }
-.special_notice{
-  font-size: 10px;
-  font-weight: bold;
+.how_trigger_btn{
   background-color: #011d73;
   color: white;
-  padding: 5px;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 7px;
+  border: solid 1px #011d73;
+  border-radius: 15px;
+  cursor: pointer;
 }
 .toogle
 {
@@ -244,23 +244,15 @@ label{
   font-size: 18px;
 }
 @media screen and (max-width:500px) {
-  .logo_img{
-    display: none;
-  }
-  .logo_img_mobile{
-    display: inline;
+  .gnosis_logo_img{
+    width: 350px;
+    height: 196,88px;
   }
   .search_input, .search_field{
     width: 80%;
   }
 }
 @media screen and (min-width:500px) {
-  .logo_img{
-    display: inline;
-  }
-  .logo_img_mobile{
-    display: none;
-  }
   .search_field{
     width: 50%;
   }
