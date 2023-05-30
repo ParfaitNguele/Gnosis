@@ -767,16 +767,18 @@ export class AppComponent {
   */
   showPsaumeAndPrayer(psaume_title:string, psaume_content:string, prayer_content:string, psaume_nbr:string, prayer_nbr:string, nom_archange:string){
     //mark query
-    let psaumeTitle = this.initMark(psaume_title);
+    let psaumeTitle = this.decodeQuote(psaume_title);
     let pc = this.formateInput(psaume_content);
     let psaumeContent = this.initMark(pc);
+    let finalPsaumeContent = this.decodeQuote(psaumeContent);
     let prayerContent = this.initMark(prayer_content);
+    let finalPrayerContent = this.decodeQuote(prayerContent);
     //then open modal
     this.dialog.open(ModalContentComponent,{
       data:{
-        title:this.decodeQuote(psaumeTitle),
-        psaume:this.decodeQuote(psaumeContent),
-        priere:this.decodeQuote(prayerContent),
+        title:psaumeTitle,
+        psaume:finalPsaumeContent,
+        priere:finalPrayerContent,
         numero_psaume:psaume_nbr,
         numero_priere:prayer_nbr,
         nom_archange:nom_archange
@@ -785,14 +787,15 @@ export class AppComponent {
   }
   showPsaume(nom_psaume:string, contenu_psaume:string, numero_psaume:string, nom_archange:string){
     //mark query
-    let psaumeTitle = this.initMark(nom_psaume);
+    let psaumeTitle = this.decodeQuote(nom_psaume);
     let pc = this.formateInput(contenu_psaume);
     let psaumeContent = this.initMark(pc);
+    let finalContent = this.decodeQuote(psaumeContent);
     //then open modal
     this.dialog.open(PsaumeModalComponent,{
       data:{
-        nom_psaume:this.decodeQuote(psaumeTitle),
-        contenu_psaume:this.decodeQuote(psaumeContent),
+        nom_psaume:psaumeTitle,
+        contenu_psaume:finalContent,
         numero_psaume:numero_psaume,
         nom_archange:nom_archange
       }
@@ -801,14 +804,16 @@ export class AppComponent {
   showPrayer(contenu_priere:string, numero_priere:string, nom_archange:string, numero_psaume:string, nom_psaume:string){
     //mark query
     let prayerContent = this.initMark(contenu_priere);
+    let finalContent = this.decodeQuote(prayerContent);
+    let namePsaume = this.decodeQuote(nom_psaume);
     //then open modal
     this.dialog.open(PrayerModalComponent,{
       data:{
         numero_priere:numero_priere,
-        contenu_priere:this.decodeQuote(prayerContent),
+        contenu_priere:finalContent,
         nom_archange:nom_archange,
         numero_psaume:numero_psaume,
-        nom_psaume:nom_psaume
+        nom_psaume:namePsaume
       }
     });
   }
