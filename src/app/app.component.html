@@ -58,7 +58,7 @@
               <mat-card class="clickable" (click)='showPsaumeAndPrayer(pp.nom_psaume, pp.contenu_psaume, pp.contenu_priere, pp.numero_psaume, pp.numero_priere, pp.nom_archange)'>
                 <p class="all_occ_span">Total : {{pp.occ_total}}</p>
                 <mat-card-content >
-                  <p class="ps_level"><span class="{{setArchangeColor(pp.nom_archange)}}">Psaume {{pp.numero_psaume}} de l'Archange {{pp.nom_archange}}</span> - {{pp.nom_psaume}} <sup class="occ_badge">{{pp.occ_psaume}} occurrence.s</sup></p>
+                  <p class="ps_level"><span class="{{setArchangeColor(pp.nom_archange)}}">Psaume {{pp.numero_psaume}} de l'Archange {{pp.nom_archange}}</span> - {{decodeQuote(pp.nom_psaume)}} <sup class="occ_badge">{{pp.occ_psaume}} occurrence.s</sup></p>
                   <p class="pr_level {{setContentStatut(pp.occ_priere)}}">Prière {{pp.numero_priere}} <sup class="occ_badge">{{pp.occ_priere}} occurrence.s</sup></p>
                 </mat-card-content>
               </mat-card>
@@ -86,7 +86,7 @@
             <mat-card-content>
               <!--psaume-->
               <mat-card class="clickable" (click)='showPsaume(ps.nom_psaume, ps.contenu_psaume, ps.numero_psaume, ps.nom_archange)'>
-                <p class="ps_level"><span class="{{setArchangeColor(ps.nom_archange)}}">Psaume {{ps.numero_psaume}} de l'Archange {{ps.nom_archange}}</span> - {{ps.nom_psaume}} <sup class="occ_badge">{{ps.occ_psaume}} occurrence.s</sup></p>
+                <p class="ps_level"><span class="{{setArchangeColor(ps.nom_archange)}}">Psaume {{ps.numero_psaume}} de l'Archange {{ps.nom_archange}}</span> - {{decodeQuote(ps.nom_psaume)}} <sup class="occ_badge">{{ps.occ_psaume}} occurrence.s</sup></p>
               </mat-card>
             </mat-card-content>
           </mat-card>
@@ -112,7 +112,7 @@
             <mat-card-content>
               <!--prayer-->
               <mat-card class="prayer_content clickable" (click)='showPrayer(pr.contenu_priere, pr.numero_priere, pr.nom_archange, pr.numero_psaume, pr.nom_psaume)'>
-                <p class="pr_level"><span class="{{setArchangeColor(pr.nom_archange)}}">Prière {{pr.numero_priere}} du Psaume {{pr.numero_psaume}} de l'Archange {{pr.nom_archange}}</span> - {{pr.nom_psaume}} <sup class="occ_badge">{{pr.occ_priere}} occurrence.s</sup></p>
+                <p class="pr_level"><span class="{{setArchangeColor(pr.nom_archange)}}">Prière {{pr.numero_priere}} du Psaume {{pr.numero_psaume}} de l'Archange {{pr.nom_archange}}</span> - {{decodeQuote(pr.nom_psaume)}} <sup class="occ_badge">{{pr.occ_priere}} occurrence.s</sup></p>
               </mat-card>
             </mat-card-content>
           </mat-card>
@@ -147,7 +147,7 @@
               <!--psaume + prayer-->
               <mat-card class="clickable" (click)='showPsaumeAndPrayer(cpp.nom_psaume, cpp.contenu_psaume, cpp.contenu_priere, cpp.numero_psaume, cpp.numero_priere, cpp.nom_archange)'>
                 <p class="all_occ_span">Total : {{cpp.occ_total}}</p>
-                <p class="ps_level"><span class="{{setArchangeColor(cpp.nom_archange)}}">Psaume {{cpp.numero_psaume}} de l'Archange {{cpp.nom_archange}}</span> - {{cpp.nom_psaume}} - <span class="combine_search_occ_span">{{str_1}}<sup class="occ_badge">{{cpp.occ_psaume_str_1}} occurrence.s</sup> {{str_2}}<sup class="occ_badge">{{cpp.occ_psaume_str_2}} occurrence.s</sup></span></p>
+                <p class="ps_level"><span class="{{setArchangeColor(cpp.nom_archange)}}">Psaume {{cpp.numero_psaume}} de l'Archange {{cpp.nom_archange}}</span> - {{decodeQuote(cpp.nom_psaume)}} - <span class="combine_search_occ_span">{{str_1}}<sup class="occ_badge">{{cpp.occ_psaume_str_1}} occurrence.s</sup> {{str_2}}<sup class="occ_badge">{{cpp.occ_psaume_str_2}} occurrence.s</sup></span></p>
                 <p class="pr_level {{setContentStatutForCombine(cpp.occ_priere_str_1, cpp.occ_priere_str_2)}}">Prière {{cpp.numero_priere}} - <span class="combine_search_occ_span">{{str_1}}<sup class="occ_badge">{{cpp.occ_priere_str_1}} occurrence.s</sup> {{str_2}}<sup class="occ_badge">{{cpp.occ_priere_str_2}} occurrence.s</sup></span></p>
               </mat-card>
             </mat-card-content>
@@ -176,7 +176,7 @@
               <!--psaume-->
               <mat-card class="clickable" (click)='showPsaume(cps.nom_psaume, cps.contenu_psaume, cps.numero_psaume, cps.nom_archange)'>
                 <p class="all_occ_span">Total : {{cps.occ_total}}</p>
-                <p class="ps_level"><span class="{{setArchangeColor(cps.nom_archange)}}">Psaume {{cps.numero_psaume}} de l'Archange {{cps.nom_archange}}</span> - {{cps.nom_psaume}} - <span class="combine_search_occ_span">{{str_1}}<sup class="occ_badge">{{cps.occ_psaume_str_1}} occurrence.s</sup> {{str_2}}<sup class="occ_badge">{{cps.occ_psaume_str_2}} occurrence.s</sup></span></p>
+                <p class="ps_level"><span class="{{setArchangeColor(cps.nom_archange)}}">Psaume {{cps.numero_psaume}} de l'Archange {{cps.nom_archange}}</span> - {{decodeQuote(cps.nom_psaume)}} - <span class="combine_search_occ_span">{{str_1}}<sup class="occ_badge">{{cps.occ_psaume_str_1}} occurrence.s</sup> {{str_2}}<sup class="occ_badge">{{cps.occ_psaume_str_2}} occurrence.s</sup></span></p>
               </mat-card>
             </mat-card-content>
           </mat-card>
@@ -205,7 +205,7 @@
               <!--prayer-->
               <mat-card class="prayer_content clickable" (click)='showPrayer(cpr.contenu_priere, cpr.numero_priere, cpr.nom_archange, cpr.numero_psaume, cpr.nom_psaume)'>
                 <p class="all_occ_span">Total : {{cpr.occ_total}}</p>
-                <p class="pr_level"><span class="{{setArchangeColor(cpr.nom_archange)}}">Prière {{cpr.numero_priere}} du Psaume {{cpr.numero_psaume}} de l'Archange {{cpr.nom_archange}}</span> - {{cpr.nom_psaume}} - <span class="combine_search_occ_span">{{str_1}}<sup class="occ_badge">{{cpr.occ_priere_str_1}} occurrence.s</sup> {{str_2}}<sup class="occ_badge">{{cpr.occ_priere_str_2}} occurrence.s</sup></span></p>
+                <p class="pr_level"><span class="{{setArchangeColor(cpr.nom_archange)}}">Prière {{cpr.numero_priere}} du Psaume {{cpr.numero_psaume}} de l'Archange {{cpr.nom_archange}}</span> - {{decodeQuote(cpr.nom_psaume)}} - <span class="combine_search_occ_span">{{str_1}}<sup class="occ_badge">{{cpr.occ_priere_str_1}} occurrence.s</sup> {{str_2}}<sup class="occ_badge">{{cpr.occ_priere_str_2}} occurrence.s</sup></span></p>
               </mat-card>
             </mat-card-content>
           </mat-card>

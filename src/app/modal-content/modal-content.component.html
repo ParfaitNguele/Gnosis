@@ -4,7 +4,7 @@
   <p class="pr_title">
     <span class="pr_level">Prière {{prayerNbr}}</span>
   </p>
-  <p class="prayer_content">{{priere}}</p>
+  <p class="prayer_content" [innerHtml]= "priere"></p>
   <!--modal-->
   <div class="process_modal {{modal_status}}">
     <div class="modal_content">

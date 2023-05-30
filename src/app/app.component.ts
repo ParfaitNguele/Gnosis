@@ -19,6 +19,7 @@ export class AppComponent {
   str:string = '';
   str_1:string = '';
   str_2:string = '';
+  search_type:string = '';
   main_filters:Array<any> = ['psaumes', 'prayers'];
   second_filters:Array<any> = ['michael', 'gabriel', 'raphael', 'ouriel'];
   psaumes_selected:boolean = true;
@@ -321,7 +322,7 @@ export class AppComponent {
     if(/\+/.test(this.str) || /"/.test(this.str)){
       if(/\+/.test(this.str)){
         if(this.str.length > 3 && /[A-Za-z]+/.test(this.str)){
-          if(this.verifyCombineSearch() === true && this.containsSpecialChars(this.str_1) === false && this.containsSpecialChars(this.str_2) === false){
+          if(this.verifyCombineSearch() === true && this.containsSpecialChars(this.str_1) === false && this.containsSpecialChars(this.str_2) === false && this.checkBar(this.str_1) === false && this.checkBar(this.str_2) === false){
 
             if(this.main_filters.length === 0 || this.second_filters.length === 0){
               alert("Veuillez choisir au moins une catégorie (Psaumes, Prières) et un archange (Michael, Gabriel, Raphael, Ouriel).");
@@ -330,7 +331,10 @@ export class AppComponent {
               this.pocess_state = "Recherche...";
               //hide previous results
               this.combine_results_status = 'hidden';
-              this.engine.initEngineForCombine([this.str_1, this.str_2], this.main_filters, this.second_filters)
+              this.search_type = "combine";
+              let s_1 = this.encodeQuote(this.str_1);
+              let s_2 = this.encodeQuote(this.str_2);
+              this.engine.initEngineForCombine([s_1, s_2], this.main_filters, this.second_filters)
               .subscribe(
                 res =>this.managecombineSearchRes(res),
                 err =>this.managecombineSearchErr(err)
@@ -345,7 +349,7 @@ export class AppComponent {
       }else{
         if(/"/.test(this.str)){
           let arr_dig = this.str.split('"');
-          if(arr_dig.length === 3 && /[0-9]+/.test(arr_dig[1]) && this.containsSpecialChars(arr_dig[1]) === false){
+          if(arr_dig.length === 3 && /[0-9]+/.test(arr_dig[1]) && this.containsSpecialChars(arr_dig[1]) === false && this.checkBar(arr_dig[1]) === false){
 
             if(this.main_filters.length === 0 || this.second_filters.length === 0){
               alert("Veuillez choisir au moins une catégorie (Psaumes, Prières) et un archange (Michael, Gabriel, Raphael, Ouriel).");
@@ -354,6 +358,7 @@ export class AppComponent {
               this.pocess_state = "Recherche...";
               //hide previous results
               this.digit_results_status = 'hidden';
+              this.search_type = "digit";
               this.engine.initEngineForDigit(arr_dig[1], this.main_filters, this.second_filters)
               .subscribe(
                 res =>this.manageDigitRes(res),
@@ -366,7 +371,7 @@ export class AppComponent {
         }
       }
     }else{
-      if(this.str.length < 1 || !/[A-Za-z]+/.test(this.str) || this.containsSpecialChars(this.str) === true){
+      if(this.str.length < 1 || !/[A-Za-z]+/.test(this.str) || this.containsSpecialChars(this.str) === true || this.checkBar(this.str) === true){
         alert("Veuillez saisir un mot-clé valide !");
       }else{
         if(this.main_filters.length === 0 || this.second_filters.length === 0){
@@ -377,7 +382,8 @@ export class AppComponent {
           //hide previous results
           this.results_status = 'hidden';
           //init search
-          this.engine.initEngine(this.str, this.main_filters, this.second_filters)
+          this.search_type = "simple";
+          this.engine.initEngine(this.encodeQuote(this.str), this.main_filters, this.second_filters)
           .subscribe(
             res =>this.manageSearchRes(res),
             err =>this.manageSearchErr(err)
@@ -760,11 +766,17 @@ export class AppComponent {
   * * modals methods
   */
   showPsaumeAndPrayer(psaume_title:string, psaume_content:string, prayer_content:string, psaume_nbr:string, prayer_nbr:string, nom_archange:string){
+    //mark query
+    let psaumeTitle = this.initMark(psaume_title);
+    let pc = this.formateInput(psaume_content);
+    let psaumeContent = this.initMark(pc);
+    let prayerContent = this.initMark(prayer_content);
+    //then open modal
     this.dialog.open(ModalContentComponent,{
       data:{
-        title:psaume_title,
-        psaume:this.formateInput(psaume_content),
-        priere:prayer_content,
+        title:this.decodeQuote(psaumeTitle),
+        psaume:this.decodeQuote(psaumeContent),
+        priere:this.decodeQuote(prayerContent),
         numero_psaume:psaume_nbr,
         numero_priere:prayer_nbr,
         nom_archange:nom_archange
@@ -772,20 +784,28 @@ export class AppComponent {
     });
   }
   showPsaume(nom_psaume:string, contenu_psaume:string, numero_psaume:string, nom_archange:string){
+    //mark query
+    let psaumeTitle = this.initMark(nom_psaume);
+    let pc = this.formateInput(contenu_psaume);
+    let psaumeContent = this.initMark(pc);
+    //then open modal
     this.dialog.open(PsaumeModalComponent,{
       data:{
-        nom_psaume:nom_psaume,
-        contenu_psaume:this.formateInput(contenu_psaume),
+        nom_psaume:this.decodeQuote(psaumeTitle),
+        contenu_psaume:this.decodeQuote(psaumeContent),
         numero_psaume:numero_psaume,
         nom_archange:nom_archange
       }
     });
   }
   showPrayer(contenu_priere:string, numero_priere:string, nom_archange:string, numero_psaume:string, nom_psaume:string){
+    //mark query
+    let prayerContent = this.initMark(contenu_priere);
+    //then open modal
     this.dialog.open(PrayerModalComponent,{
       data:{
         numero_priere:numero_priere,
-        contenu_priere:contenu_priere,
+        contenu_priere:this.decodeQuote(prayerContent),
         nom_archange:nom_archange,
         numero_psaume:numero_psaume,
         nom_psaume:nom_psaume
@@ -798,6 +818,19 @@ export class AppComponent {
   /*
   * * shared methods
   */
+  initMark(content:string){
+    let readyString:string = "";
+    if(this.search_type === "simple"){
+      readyString = this.helper.markSearchWordSimple(content, this.encodeQuote(this.str.trim()));
+    }else if(this.search_type === "combine"){
+      readyString = this.helper.markSearchWordCombine(content, this.encodeQuote(this.str_1.trim()), this.encodeQuote(this.str_2.trim()));
+    }else if(this.search_type === "digit"){
+      let arr_dig = this.str.split('"');
+      let digit = arr_dig[1].trim();
+      readyString = this.helper.markSearchWordDigit(content, digit);
+    }
+    return readyString;
+  }
   spliteArrayDefault(arr_to_slice:Array<any>, tag:string){
     let length = arr_to_slice.length;
     if(length < 100){
@@ -882,9 +915,34 @@ export class AppComponent {
     this.resultsTotalStatus = "";
   }
   containsSpecialChars(str:string) {
-    const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    const specialChars = /[`!@#$%^&*()_+\=\[\]{};:"\\|,.<>\/?~]/;
     return specialChars.test(str);
   }
+  encodeQuote(content:string){
+    let reg = /'/g;
+    let reg_2 = /’/g;
+    let new_str = content.replace(reg, "&#039;");
+    let final_str = new_str.replace(reg_2, "&#039;");
+    return final_str;
+  }
+  decodeQuote(content:string){
+    let reg = /&#039;/g;
+    let new_str = content.replace(reg, "'");
+    return new_str;
+  }
+  checkBar(str:string){
+    if(/[-]{2,}/.test(str)){
+      return true;
+    }else{
+      return false;
+    }
+  }
   test(){
+    let str = "amour-dieu";
+    if(/[-]{2,}/.test(str)){
+      console.log("Yes.");
+    }else{
+      console.log("No.");
+    }
   }
 }
